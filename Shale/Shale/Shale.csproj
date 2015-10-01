@@ -32,12 +32,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Slb.Ocean.Data, Version=2014.1.0.0, Culture=neutral, PublicKeyToken=14ef4a483ef6a64b, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Slb.Ocean.Petrel.Configuration, Version=14.1.0.0, Culture=neutral, PublicKeyToken=d42cec326f61051f, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Slb.Ocean.Petrel.UI.Controls, Version=14.1.0.0, Culture=neutral, PublicKeyToken=da9605198f529641, processorArchitecture=MSIL" />
+    <Reference Include="Slb.Ocean.Petrel.Well, Version=14.3.0.0, Culture=neutral, PublicKeyToken=14ef4a483ef6a64b, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="system.drawing" />
+    <Reference Include="system.windows.forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Deployment" />
     <Reference Include="Slb.Ocean.Core">
@@ -71,6 +81,13 @@
     <Compile Include="ShaleCommandHandler.cs" />
     <Compile Include="ShaleModule.cs" />
     <Compile Include="ShalePlugin.cs" />
+    <Compile Include="ShaleWorkstep.cs" />
+    <Compile Include="ShaleWorkstepUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ShaleWorkstepUI.designer.cs">
+      <DependentUpon>ShaleWorkstepUI.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
@@ -97,6 +114,9 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShaleWorkstepUI.resx">
+      <DependentUpon>ShaleWorkstepUI.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

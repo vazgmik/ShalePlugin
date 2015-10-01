@@ -12,6 +12,9 @@ namespace Shale
     /// </summary>
     public class ShaleModule : IModule
     {
+        #region Private Variables
+        private Process m_shaleworkstepInstance;
+        #endregion
         public ShaleModule()
         {
             //
@@ -42,6 +45,13 @@ namespace Shale
             
             // Register ShaleCommandHandler
             PetrelSystem.CommandManager.CreateCommand(ShaleCommandHandler.ID, new Shale.ShaleCommandHandler());
+            
+            // Register ShaleWorkstep
+            ShaleWorkstep shaleworkstepInstance = new ShaleWorkstep();
+            PetrelSystem.WorkflowEditor.AddUIFactory<ShaleWorkstep.Arguments>(new ShaleWorkstep.UIFactory());
+            PetrelSystem.WorkflowEditor.Add(shaleworkstepInstance);
+            m_shaleworkstepInstance = new Slb.Ocean.Petrel.Workflow.WorkstepProcessWrapper(shaleworkstepInstance);
+            PetrelSystem.ProcessDiagram.Add(m_shaleworkstepInstance, "Plug-ins");
         }
 
         /// <summary>
@@ -68,6 +78,9 @@ namespace Shale
         public void Disintegrate()
         {
             // TODO:  Add ShaleModule.Disintegrate implementation
+            // Unregister ShaleWorkstep
+            PetrelSystem.WorkflowEditor.RemoveUIFactory<ShaleWorkstep.Arguments>();
+            PetrelSystem.ProcessDiagram.Remove(m_shaleworkstepInstance);
         }
 
         #endregion
