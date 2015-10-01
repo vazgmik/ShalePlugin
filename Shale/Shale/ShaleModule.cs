@@ -39,6 +39,9 @@ namespace Shale
         {
             
             // TODO:  Add ShaleModule.Integrate implementation
+            
+            // Register ShaleCommandHandler
+            PetrelSystem.CommandManager.CreateCommand(ShaleCommandHandler.ID, new Shale.ShaleCommandHandler());
         }
 
         /// <summary>
@@ -50,6 +53,11 @@ namespace Shale
         {
 
             // TODO:  Add ShaleModule.IntegratePresentation implementation
+            
+            // Add Ribbon Configuration file
+            PetrelSystem.ConfigurationService.AddConfiguration(Shale.Properties.Resources.OceanRibbon);
+            // Register Menu Item for Shale.ShaleCommand command. Will be available in Petrel Classic mode.
+            Slb.Ocean.Petrel.UI.Tools.WellKnownMenus.Tools.AddTool(new Slb.Ocean.Petrel.UI.Tools.PetrelCommandTool(new Slb.Ocean.Petrel.Commands.CommandItem(ShaleCommandHandler.ID)));
         }
 
         /// <summary>

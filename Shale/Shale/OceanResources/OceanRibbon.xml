@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration Type="Configuration.ConfigurationState" Id="605a4784-4022-42b8-80d6-2d14b499d5fe" Version="1.0.0.9" Caption="Ocean - Ribbon">
+  <Sections Type="Extesibility.ConfigurationSectionCollection">
+    <Commands.CommandSection Version="1.0.0.3">
+      <Commands Type="Commands.CommandCollection">
+        <Commands.SimpleCommand Id="Shale.ShaleCommand">
+          <Extensions Type="Extensibility.ExtensionCollection">
+            <Attributes.AttributesExtension>
+              <Attributes Type="Attributes.AttributeCollection">
+                <Attributes.AttributeValue AttributeId="Appearance.Caption" ValueType="System.String" Value="ShaleCommand" />
+                <Attributes.AttributeValue AttributeId="Appearance.Image.32" ValueType="Appearance.ImageData" Value="{Uri:pack://application:,,,/Slb.Ocean.Petrel.Resources;component/images/modules_32.png}" />
+                <Attributes.AttributeValue AttributeId="Appearance.Image.16" ValueType="Appearance.ImageData" Value="{Uri:pack://application:,,,/Slb.Ocean.Petrel.Resources;component/images/modules_16.png}" />
+              </Attributes>
+            </Attributes.AttributesExtension>
+          </Extensions>
+        </Commands.SimpleCommand>
+      </Commands>
+      <CommandGroups Type="Commands.CommandGroupCollection" />
+    </Commands.CommandSection>
+    <ToolContainers.RibbonSection Version="1.0.0.8">
+      <Ribbons Type="ToolContainers.RibbonCollection">
+        <ToolContainers.Ribbon Id="9f42ae22-15c5-4351-9057-5921be95969d">
+          <Extensions Type="Extensibility.ExtensionCollection">
+            <Attributes.AttributesExtension>
+              <Attributes Type="Attributes.AttributeCollection">
+                <Attributes.AttributeValue AttributeId="Appearance.Caption" ValueType="System.String" Value="Platform" />
+              </Attributes>
+            </Attributes.AttributesExtension>
+          </Extensions>
+          <Tabs Type="ToolContainers.RibbonTabCollection">
+            <ToolContainers.RibbonTab Id="5336910d-0908-4ed1-ab69-71ad00a8f73a">
+              <Extensions Type="Extensibility.ExtensionCollection">
+                <Attributes.AttributesExtension>
+                  <Attributes Type="Attributes.AttributeCollection">
+                    <Attributes.AttributeValue AttributeId="Appearance.Caption" ValueType="System.String" Value="Ocean" />
+                  </Attributes>
+                </Attributes.AttributesExtension>
+              </Extensions>
+              <TabGroups Type="ToolContainers.RibbonTabGroupCollection">
+                <ToolContainers.RibbonTabGroup Id="3e747ea6-4b73-47e6-ab6e-28a12d910978">
+                  <Extensions Type="Extensibility.ExtensionCollection">
+                    <Attributes.AttributesExtension>
+                      <Attributes Type="Attributes.AttributeCollection">
+                        <Attributes.AttributeValue AttributeId="Appearance.Caption" ValueType="System.String" Value="Shale" />
+                      </Attributes>
+                    </Attributes.AttributesExtension>
+                  </Extensions>
+                  <Tools Type="Tools.ToolCollection">
+                    <Tools.ButtonTool CommandId="Shale.ShaleCommand">
+                      <Extensions Type="Extensibility.ExtensionCollection">
+                        <Attributes.AttributesExtension>
+                          <Attributes Type="Attributes.AttributeCollection">
+                            <Attributes.AttributeValue AttributeId="Appearance.ToolStyle" ValueType="Tools.ToolStyle" Value="SmallImageAndText" />
+                          </Attributes>
+                        </Attributes.AttributesExtension>
+                      </Extensions>
+                    </Tools.ButtonTool>
+                  </Tools>
+                </ToolContainers.RibbonTabGroup>
+              </TabGroups>
+            </ToolContainers.RibbonTab>
+          </Tabs>
+          <Backstage Type="ToolContainers.RibbonBackstage">
+            <LeftTools Type="Tools.ToolCollection" />
+            <RightTools Type="Tools.ToolCollection" />
+            <FooterTools Type="Tools.ToolCollection" />
+          </Backstage>
+          <Backstage2010 Type="ToolContainers.RibbonBackstage2010">
+            <Tools Type="Tools.ToolCollection" />
+          </Backstage2010>
+          <QuickAccessToolbar Type="ToolContainers.QuickAccessToolbar">
+            <Tools Type="Tools.ToolCollection" />
+          </QuickAccessToolbar>
+          <TabToolbar Type="ToolContainers.RibbonTabToolbar">
+            <Tools Type="Tools.ToolCollection" />
+          </TabToolbar>
+        </ToolContainers.Ribbon>
+      </Ribbons>
+    </ToolContainers.RibbonSection>
+    <ToolContainers.PaletteSection Version="1.0.0.2">
+      <Palettes Type="ToolContainers.PaletteCollection" />
+    </ToolContainers.PaletteSection>
+    <ToolContainers.MiniToolbarSection Version="1.0.0.2">
+      <MiniToolbars Type="ToolContainers.MiniToolbarCollection" />
+    </ToolContainers.MiniToolbarSection>
+    <Configuration.ResourceSection Version="1.0.0.5">
+      <Resources Type="Configuration.ResourceCollection" />
+    </Configuration.ResourceSection>
+    <Rules.RuleSection Version="1.0.0.2">
+      <Rules Type="Rules.RuleCollection" />
+    </Rules.RuleSection>
+  </Sections>
+</Configuration>
