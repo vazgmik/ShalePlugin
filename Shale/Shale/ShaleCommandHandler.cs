@@ -28,8 +28,8 @@ namespace Shale
             PetrelLogger.InfoOutputWindow(string.Format("{0} clicked", @"ShaleCommand" ));
             Form a = new Form();
             a.Icon = Icon.FromHandle(PetrelImages.Modules.GetHicon());
-            a.Text = "CreateVF";
-            a.Width = 550;
+            a.Text = "ShaleWorkstep";
+            a.Width = 750;
             a.Height = 550;
             ShaleWorkstep asad = new ShaleWorkstep();
             ShaleWorkstep.Arguments arg = new ShaleWorkstep.Arguments(); 
