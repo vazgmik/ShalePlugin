@@ -107,7 +107,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="OceanResources\OceanRibbon.xml" />
+    <DesignData Include="OceanResources\OceanRibbon.xml" />
     <Content Include="OceanResources\Readme.txt" />
   </ItemGroup>
   <ItemGroup>

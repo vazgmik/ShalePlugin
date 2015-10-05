@@ -1,10 +1,11 @@
-using System;
+﻿using System;
 
 using Slb.Ocean.Core;
 using Slb.Ocean.Petrel;
 using Slb.Ocean.Petrel.UI;
 using Slb.Ocean.Petrel.Workflow;
 using Slb.Ocean.Petrel.DomainObject.Well;
+using System.Collections.Generic;
 
 namespace Shale
 {
@@ -73,7 +74,32 @@ namespace Shale
 
             public override void ExecuteSimple()
             {
-                // TODO: Implement the workstep logic here.
+                  
+                using (ITransaction trans = DataManager.NewTransaction())
+                {
+                    /*Шаг 1:Calculation of LogR of all Resistivity logs 
+                         Исходные данные:каротажная кривая сопротивления (LLD) 
+                         Результат: логарифм кривой сопротивления                     */         
+                    var log = arguments.ShaleWellLog;
+                    trans.Lock(log);
+                    IEnumerable<WellLogSample> samples = log.Samples; 
+                    double[] logR = new double[log.SampleCount]; 
+                    int count = 0; 
+                    foreach (WellLogSample sample in samples) 
+                    {
+                        logR[count] = Math.Log10(sample.Value); 
+                    }
+
+                    /*Шаг 2:CreatingCross‐PlotLogRvs.Sonic (DT) 
+                        Исходные данные:  
+                        Данные кривой сопротивления,  
+                        Каротажная кривая акустики 
+                        Результат:  
+                        Кросс плот (ось X- сопротивление, ось Y- акустика)                     */
+
+                    trans.Commit(); 
+                }
+                
             }
         }
 
@@ -97,7 +123,13 @@ namespace Shale
             }
 
             private Slb.Ocean.Petrel.DomainObject.Well.WellLog shaleWellLog;
+            private Slb.Ocean.Petrel.DomainObject.Well.WellLog sonicLog;
 
+            public Slb.Ocean.Petrel.DomainObject.Well.WellLog SonicLog
+            {
+                get { return sonicLog; }
+                set { sonicLog = value; }
+            }
             public Slb.Ocean.Petrel.DomainObject.Well.WellLog ShaleWellLog
             {
                 internal get { return this.shaleWellLog; }

@@ -35,8 +35,9 @@ namespace Shale
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.dropTarget2 = new Slb.Ocean.Petrel.UI.DropTarget();
             this.label2 = new System.Windows.Forms.Label();
-            this.presentationBox1 = new Slb.Ocean.Petrel.UI.Controls.PresentationBox();
-            this.presentationBox2 = new Slb.Ocean.Petrel.UI.Controls.PresentationBox();
+            this.boxSonic = new Slb.Ocean.Petrel.UI.Controls.PresentationBox();
+            this.boxWellLog = new Slb.Ocean.Petrel.UI.Controls.PresentationBox();
+            this.btn_Apply = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -63,15 +64,16 @@ namespace Shale
             this.dropTarget1.Name = "dropTarget1";
             this.dropTarget1.Size = new System.Drawing.Size(26, 23);
             this.dropTarget1.TabIndex = 0;
+            this.dropTarget1.DragDrop += new System.Windows.Forms.DragEventHandler(this.WellLog_DragDrop);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(42, 13);
+            this.label1.Size = new System.Drawing.Size(74, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Welllog";
+            this.label1.Text = "Welllog ( LLD)";
             // 
             // tableLayoutPanel2
             // 
@@ -80,8 +82,8 @@ namespace Shale
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel3, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel1, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.presentationBox1, 1, 1);
-            this.tableLayoutPanel2.Controls.Add(this.presentationBox2, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.boxSonic, 1, 1);
+            this.tableLayoutPanel2.Controls.Add(this.boxWellLog, 1, 0);
             this.tableLayoutPanel2.Location = new System.Drawing.Point(62, 16);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 2;
@@ -111,6 +113,7 @@ namespace Shale
             this.dropTarget2.Name = "dropTarget2";
             this.dropTarget2.Size = new System.Drawing.Size(26, 23);
             this.dropTarget2.TabIndex = 0;
+            this.dropTarget2.DragDrop += new System.Windows.Forms.DragEventHandler(this.sonic_DragDrop);
             // 
             // label2
             // 
@@ -121,24 +124,35 @@ namespace Shale
             this.label2.TabIndex = 1;
             this.label2.Text = "Sonic Log";
             // 
-            // presentationBox1
+            // boxSonic
             // 
-            this.presentationBox1.Location = new System.Drawing.Point(143, 85);
-            this.presentationBox1.Name = "presentationBox1";
-            this.presentationBox1.Size = new System.Drawing.Size(100, 22);
-            this.presentationBox1.TabIndex = 3;
+            this.boxSonic.Location = new System.Drawing.Point(143, 85);
+            this.boxSonic.Name = "boxSonic";
+            this.boxSonic.Size = new System.Drawing.Size(100, 22);
+            this.boxSonic.TabIndex = 3;
             // 
-            // presentationBox2
+            // boxWellLog
             // 
-            this.presentationBox2.Location = new System.Drawing.Point(143, 3);
-            this.presentationBox2.Name = "presentationBox2";
-            this.presentationBox2.Size = new System.Drawing.Size(100, 22);
-            this.presentationBox2.TabIndex = 4;
+            this.boxWellLog.Location = new System.Drawing.Point(143, 3);
+            this.boxWellLog.Name = "boxWellLog";
+            this.boxWellLog.Size = new System.Drawing.Size(100, 22);
+            this.boxWellLog.TabIndex = 4;
+            // 
+            // btn_Apply
+            // 
+            this.btn_Apply.Location = new System.Drawing.Point(342, 271);
+            this.btn_Apply.Name = "btn_Apply";
+            this.btn_Apply.Size = new System.Drawing.Size(75, 23);
+            this.btn_Apply.TabIndex = 2;
+            this.btn_Apply.Text = "Apply";
+            this.btn_Apply.UseVisualStyleBackColor = true;
+            this.btn_Apply.Click += new System.EventHandler(this.btn_Apply_Click);
             // 
             // ShaleWorkstepUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btn_Apply);
             this.Controls.Add(this.tableLayoutPanel2);
             this.Name = "ShaleWorkstepUI";
             this.Size = new System.Drawing.Size(436, 306);
@@ -161,7 +175,8 @@ namespace Shale
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private Slb.Ocean.Petrel.UI.DropTarget dropTarget2;
         private System.Windows.Forms.Label label2;
-        private Slb.Ocean.Petrel.UI.Controls.PresentationBox presentationBox1;
-        private Slb.Ocean.Petrel.UI.Controls.PresentationBox presentationBox2;
+        private Slb.Ocean.Petrel.UI.Controls.PresentationBox boxSonic;
+        private Slb.Ocean.Petrel.UI.Controls.PresentationBox boxWellLog;
+        private System.Windows.Forms.Button btn_Apply;
     }
 }

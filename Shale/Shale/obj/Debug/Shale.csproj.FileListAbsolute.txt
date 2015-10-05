@@ -2,7 +2,6 @@ C:\Users\Vaz\Documents\GitHub\ShalePlugin\Shale\Shale\bin\Debug\Shale.dll
 C:\Users\Vaz\Documents\GitHub\ShalePlugin\Shale\Shale\bin\Debug\Shale.pdb
 C:\Users\Vaz\Documents\GitHub\ShalePlugin\Shale\Shale\bin\Debug\Slb.Ocean.Petrel.UI.Controls.dll
 C:\Users\Vaz\Documents\GitHub\ShalePlugin\Shale\Shale\bin\Debug\Slb.Ocean.Petrel.UI.Controls.xml
-C:\Users\Vaz\Documents\GitHub\ShalePlugin\Shale\Shale\obj\Debug\Shale.csprojResolveAssemblyReference.cache
 C:\Users\Vaz\Documents\GitHub\ShalePlugin\Shale\Shale\obj\Debug\Shale.Properties.Resources.resources
 C:\Users\Vaz\Documents\GitHub\ShalePlugin\Shale\Shale\obj\Debug\Shale.ShaleWorkstepUI.resources
 C:\Users\Vaz\Documents\GitHub\ShalePlugin\Shale\Shale\obj\Debug\Shale.csproj.GenerateResource.Cache

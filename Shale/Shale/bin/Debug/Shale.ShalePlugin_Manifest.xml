@@ -2,6 +2,7 @@
   <Files>
     <File Name="Shale.dll" />
     <File Name="Shale.pdb" />
+    <File Name="Shale.ShalePlugin_Manifest.xml" />
     <File Name="Slb.Ocean.Petrel.UI.Controls.dll" />
     <File Name="Slb.Ocean.Petrel.UI.Controls.xml" />
   </Files>
