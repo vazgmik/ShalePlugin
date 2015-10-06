@@ -87,7 +87,8 @@ namespace Shale
                     int count = 0; 
                     foreach (WellLogSample sample in samples) 
                     {
-                        logR[count] = Math.Log10(sample.Value); 
+                        logR[count] = Math.Log10(sample.Value);
+                        count++;
                     }
 
                     /*Шаг 2:CreatingCross‐PlotLogRvs.Sonic (DT) 

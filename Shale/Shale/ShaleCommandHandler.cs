@@ -5,6 +5,9 @@ using System.Text;
 
 using Slb.Ocean.Petrel.Commands;
 using Slb.Ocean.Petrel;
+using System.Windows.Forms;
+using Slb.Ocean.Petrel.UI;
+using System.Drawing;
 
 namespace Shale
 {
@@ -23,6 +26,20 @@ namespace Shale
         {          
             //TODO: Add command execution logic here
             PetrelLogger.InfoOutputWindow(string.Format("{0} clicked", @"ShaleCommand" ));
+            Form a = new Form();
+            a.Icon = Icon.FromHandle(PetrelImages.Modules.GetHicon());
+            a.Text = "ShaleWorkstep";
+            a.Width = 750;
+            a.Height = 550;
+            ShaleWorkstep asad = new ShaleWorkstep();
+            ShaleWorkstep.Arguments arg = new ShaleWorkstep.Arguments(); 
+            ShaleWorkstepUI aasd = new ShaleWorkstepUI(asad, arg, null);
+            aasd.Parent = a;
+            aasd.Show();
+            
+            //a.par
+            a.Show();
+            //a.ShowDialog();
         }
     
         #endregion

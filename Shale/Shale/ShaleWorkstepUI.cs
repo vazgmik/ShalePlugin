@@ -81,6 +81,26 @@ namespace Shale
         {
 
         }
-     
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+
+            // Set filter options and filter index.
+            ofd.Filter = "LAS files|*.las|All Files (*.*)|*.*";
+            //openFileDialog1.FilterIndex = 1;
+
+            //ofd.Multiselect = true;
+            String path, name;
+            // Process input if the user clicked OK.
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                name = ofd.FileName;
+                path = ofd.SafeFileName;
+                PetrelLogger.InfoOutputWindow(string.Format("{0}, {1}",name,path));
+
+            }
+        }
+	
     }
 }
