@@ -6,6 +6,10 @@ using Slb.Ocean.Petrel.UI;
 using Slb.Ocean.Petrel.Workflow;
 using Slb.Ocean.Petrel.DomainObject.Well;
 using System.Collections.Generic;
+using Slb.Ocean.Petrel.DomainObject.Analysis;
+using Slb.Ocean.Petrel.DomainObject;
+using Slb.Ocean.Geometry;
+using Slb.Ocean.Petrel.UI.Internal;
 
 namespace Shale
 {
@@ -71,15 +75,35 @@ namespace Shale
                 this.arguments = arguments;
                 this.context = context;
             }
-
+            public void UpdateCorrelationData2D(WellLog log1, WellLog log2, CorrelationData2D cor)
+            {
+                using (ITransaction trans = DataManager.NewTransaction())
+                {
+                    trans.Lock(cor);
+                    List<Point2> pointList = new List<Point2>();
+                    for (int sampleIndex = 0; sampleIndex < log1.SampleCount;sampleIndex++)
+                    {
+                        if (!float.IsNaN(log1[sampleIndex].Value) && !float.IsNaN(log2[sampleIndex].Value))
+                            pointList.Add(new Point2(log1[sampleIndex].Value, log2[sampleIndex].Value));
+                    }
+                    cor.Name = "LogR vs Sonic";
+                    cor.NameX = log1.WellLogVersion.Name;
+                    cor.NameY = log2.WellLogVersion.Name;
+                    cor.TemplateX = log1.WellLogVersion.Template;
+                    cor.TemplateY = log2.WellLogVersion.Template;
+                    cor.Points = pointList;
+                    
+                    trans.Commit();
+                }
+            }
             public override void ExecuteSimple()
             {
-                  
+
                 using (ITransaction trans = DataManager.NewTransaction())
                 {
                     /*Шаг 1:Calculation of LogR of all Resistivity logs 
                          Исходные данные:каротажная кривая сопротивления (LLD) 
-                         Результат: логарифм кривой сопротивления                     */         
+                         Результат: логарифм кривой сопротивления                     */
                     var log = arguments.ShaleWellLog;
                     trans.Lock(log);
                     IEnumerable<WellLogSample> samples = log.Samples; 
@@ -91,16 +115,28 @@ namespace Shale
                         count++;
                     }
 
-                    /*Шаг 2:CreatingCross‐PlotLogRvs.Sonic (DT) 
-                        Исходные данные:  
-                        Данные кривой сопротивления,  
-                        Каротажная кривая акустики 
-                        Результат:  
-                        Кросс плот (ось X- сопротивление, ось Y- акустика)                     */
-
-                    trans.Commit(); 
+                      
                 }
-                
+                CorrelationData2D cor;
+                using (ITransaction trans = DataManager.NewTransaction())
+                {
+                    /*Шаг 2:CreatingCross‐PlotLogRvs.Sonic (DT) 
+                      Исходные данные:  
+                      Данные кривой сопротивления,  
+                      Каротажная кривая акустики 
+                      Результат:  
+                      Кросс плот (ось X- сопротивление, ось Y- акустика)                   */            
+                    trans.Lock(PetrelProject.PrimaryProject);
+                    Collection col = PetrelProject.PrimaryProject.CreateCollection("Correlation collection");
+                    
+                    cor = col.CreateCorrelationData2D("Cross plot");
+                    trans.Commit();              
+                }
+                UpdateCorrelationData2D(arguments.ShaleWellLog, arguments.SonicLog, cor);
+
+                // window for crossplot 
+                ToggleWindow window = PetrelProject.ToggleWindows.Add(WellKnownWindows.Function);
+                window.ShowObject(cor);
             }
         }
 

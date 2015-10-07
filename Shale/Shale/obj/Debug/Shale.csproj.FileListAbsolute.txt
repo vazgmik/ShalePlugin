@@ -7,3 +7,4 @@ C:\Users\Vaz\Documents\GitHub\ShalePlugin\Shale\Shale\obj\Debug\Shale.ShaleWorks
 C:\Users\Vaz\Documents\GitHub\ShalePlugin\Shale\Shale\obj\Debug\Shale.csproj.GenerateResource.Cache
 C:\Users\Vaz\Documents\GitHub\ShalePlugin\Shale\Shale\obj\Debug\Shale.dll
 C:\Users\Vaz\Documents\GitHub\ShalePlugin\Shale\Shale\obj\Debug\Shale.pdb
+C:\Users\Vaz\Documents\GitHub\ShalePlugin\Shale\Shale\obj\Debug\Shale.csprojResolveAssemblyReference.cache

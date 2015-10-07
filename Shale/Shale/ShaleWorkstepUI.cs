@@ -79,9 +79,16 @@ namespace Shale
 
         private void btn_Apply_Click(object sender, EventArgs e)
         {
-
+            if (context is WorkstepProcessWrapper.Context)
+            {
+                Executor exec = workstep.GetExecutor(tmpargs,new WorkstepProcessWrapper.RuntimeContext());
+                exec.ExecuteSimple();
+            }
+            workstep.CopyArgumentPackage(tmpargs, args);
+            context.OnArgumentPackageChanged(this, new WorkflowContext.ArgumentPackageChangedEventArgs());
         }
 
+        //load wells button
         private void button1_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
