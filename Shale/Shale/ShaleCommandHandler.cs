@@ -37,7 +37,7 @@ namespace Shale
             ShaleWorkstepUI tmp_wstepui = new ShaleWorkstepUI(tmp_wstep, tmp_warg, null);
 
             tmp_wstepui.Parent = form_cont;
-            tmp_wstepui.Show();
+            form_cont.TopMost = true;
             form_cont.Show();
         }
     
