@@ -34,10 +34,12 @@ namespace Shale
 
             ShaleWorkstep tmp_wstep = new ShaleWorkstep();
             ShaleWorkstep.Arguments tmp_warg = new ShaleWorkstep.Arguments();
+            
             ShaleWorkstepUI tmp_wstepui = new ShaleWorkstepUI(tmp_wstep, tmp_warg, null);
 
             tmp_wstepui.Parent = form_cont;
             form_cont.TopMost = true;
+            tmp_wstepui.Show();
             form_cont.Show();
         }
     

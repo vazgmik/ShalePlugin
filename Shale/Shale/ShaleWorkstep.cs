@@ -77,46 +77,34 @@ namespace Shale
             }
             public void UpdateCorrelationData2D(WellLog log1, WellLog log2, CorrelationData2D cor)
             {
+
+                /*Шаг 1:Calculation of LogR of all Resistivity logs 
+                        Исходные данные:каротажная кривая сопротивления (LLD) 
+                        Результат: логарифм кривой сопротивления                 */
                 using (ITransaction trans = DataManager.NewTransaction())
                 {
                     trans.Lock(cor);
                     List<Point2> pointList = new List<Point2>();
                     for (int sampleIndex = 0; sampleIndex < log1.SampleCount;sampleIndex++)
                     {
-                        if (!float.IsNaN(log1[sampleIndex].Value) && !float.IsNaN(log2[sampleIndex].Value))
-                            pointList.Add(new Point2(log1[sampleIndex].Value, log2[sampleIndex].Value));
+                        if (!float.IsNaN(log1[sampleIndex].Value) && !float.IsNaN(log2[sampleIndex].Value) && log1[sampleIndex].Value > 0)
+                        {
+                            double db_log = Convert.ToSingle(Math.Log(Convert.ToDouble(log1[sampleIndex].Value)));
+                            pointList.Add(new Point2(db_log, log2[sampleIndex].Value));
+                        }
                     }
+
                     cor.Name = "LogR vs Sonic";
                     cor.NameX = log1.WellLogVersion.Name;
                     cor.NameY = log2.WellLogVersion.Name;
                     cor.TemplateX = log1.WellLogVersion.Template;
                     cor.TemplateY = log2.WellLogVersion.Template;
-                    cor.Points = pointList;
-                    
+                    cor.Points = pointList;        
                     trans.Commit();
                 }
             }
             public override void ExecuteSimple()
             {
-
-                using (ITransaction trans = DataManager.NewTransaction())
-                {
-                    /*Шаг 1:Calculation of LogR of all Resistivity logs 
-                         Исходные данные:каротажная кривая сопротивления (LLD) 
-                         Результат: логарифм кривой сопротивления                     */
-                    var log = arguments.ShaleWellLog;
-                    trans.Lock(log);
-                    IEnumerable<WellLogSample> samples = log.Samples; 
-                    double[] logR = new double[log.SampleCount]; 
-                    int count = 0; 
-                    foreach (WellLogSample sample in samples) 
-                    {
-                        logR[count] = Math.Log10(sample.Value);
-                        count++;
-                    }
-
-                      
-                }
                 CorrelationData2D cor;
                 using (ITransaction trans = DataManager.NewTransaction())
                 {
@@ -125,11 +113,12 @@ namespace Shale
                       Данные кривой сопротивления,  
                       Каротажная кривая акустики 
                       Результат:  
-                      Кросс плот (ось X- сопротивление, ось Y- акустика)                   */            
+                      Кросс плот (ось X- сопротивление, ось Y- акустика)                     */            
                     trans.Lock(PetrelProject.PrimaryProject);
                     Collection col = PetrelProject.PrimaryProject.CreateCollection("Correlation collection");
                     
                     cor = col.CreateCorrelationData2D("Cross plot");
+                    
                     trans.Commit();              
                 }
                 UpdateCorrelationData2D(arguments.ShaleWellLog, arguments.SonicLog, cor);

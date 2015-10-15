@@ -79,6 +79,11 @@ namespace Shale
 
         private void btn_Apply_Click(object sender, EventArgs e)
         {
+            if (context == null)
+            {
+                return;
+            }
+
             if (context is WorkstepProcessWrapper.Context)
             {
                 Executor exec = workstep.GetExecutor(tmpargs,new WorkstepProcessWrapper.RuntimeContext());
