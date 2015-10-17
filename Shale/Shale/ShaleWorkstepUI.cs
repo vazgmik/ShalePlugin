@@ -8,6 +8,8 @@ using Slb.Ocean.Petrel.DomainObject.Well;
 using Slb.Ocean.Petrel;
 using Slb.Ocean.Petrel.UI;
 using Slb.Ocean.Petrel.UI.Controls;
+using System.Collections.Generic;
+using Slb.Ocean.Geometry;
 
 namespace Shale
 {
@@ -30,6 +32,8 @@ namespace Shale
         /// </summary>
         private WorkflowContext context;
 
+        private List<Borehole> bholes = new List<Borehole>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ShaleWorkstepUI"/> class.
         /// </summary>
@@ -40,10 +44,12 @@ namespace Shale
         {
             InitializeComponent();
 
+            btn_Apply.Image = PetrelImages.Apply;
+       
             this.workstep = workstep;
             this.args = args;
             this.context = context;
-
+            
             workstep.CopyArgumentPackage(args, tmpargs);
         }
        
@@ -79,11 +85,7 @@ namespace Shale
 
         private void btn_Apply_Click(object sender, EventArgs e)
         {
-            if (context == null)
-            {
-                return;
-            }
-
+            tmpargs.Boreholes = bholes;
             if (context is WorkstepProcessWrapper.Context)
             {
                 Executor exec = workstep.GetExecutor(tmpargs,new WorkstepProcessWrapper.RuntimeContext());
@@ -93,24 +95,59 @@ namespace Shale
             context.OnArgumentPackageChanged(this, new WorkflowContext.ArgumentPackageChangedEventArgs());
         }
 
-        //load wells button
-        private void button1_Click(object sender, EventArgs e)
+     
+       
+        //delete Borehole button
+        private void btn_DelBoreHole_Click(object sender, EventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-
-            // Set filter options and filter index.
-            ofd.Filter = "LAS files|*.las|All Files (*.*)|*.*";
-            //openFileDialog1.FilterIndex = 1;
-
-            //ofd.Multiselect = true;
-            String path, name;
-            // Process input if the user clicked OK.
-            if (ofd.ShowDialog() == DialogResult.OK)
+            var selItems = list_Boreholes.SelectedItems;
+            var tmp = new List<ListBoxItem>();
+            foreach (var cur in selItems)
+                tmp.Add(cur);
+            foreach (var cur in tmp)
             {
-                name = ofd.FileName;
-                path = ofd.SafeFileName;
-                PetrelLogger.InfoOutputWindow(string.Format("{0}, {1}",name,path));
+                list_Boreholes.Items.Remove(cur);
+                bholes.Remove(cur.Value as Borehole);
+                //wells_inter.Remove(cur.Value as Point2);
+            }             
+        }
 
+        private void updateBoreholeList(Borehole borehole)
+        {
+            if (!bholes.Contains(borehole))
+            {
+                IImageInfoFactory f = CoreSystem.GetService<IImageInfoFactory>(borehole);
+                var item = new ListBoxItem();
+                item.Text = string.Format("{0} (X: {1}; Y: {2})", borehole.Name, borehole.WellHead.X, borehole.WellHead.Y);
+                item.Image = f.GetImageInfo(borehole).TypeImage;
+                item.Value = borehole;
+                list_Boreholes.Items.Add(item);
+                //wells_inter.Add(borehole.WellHead);
+                bholes.Add(borehole);
+            }
+        }
+
+        //drag drop for boreholes
+        private void drpBorehole_DragDrop(object sender, DragEventArgs e)
+        {
+            var rawData = e.Data.GetData(typeof(object));
+            switch (rawData.GetType().Name)
+            {
+                case "Borehole":
+                    {
+                        updateBoreholeList(rawData as Borehole);
+                        break;
+                    }
+                case "BoreholeCollection":
+                    {
+                        var boreholes = rawData as BoreholeCollection;
+                        foreach (var borehole in boreholes)
+                            updateBoreholeList(borehole);
+                        break;
+                    }
+                default:
+                    PetrelLogger.ErrorBox("Объект не является скважиной!");
+                    break;
             }
         }
 	

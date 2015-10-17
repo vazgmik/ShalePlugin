@@ -75,25 +75,62 @@ namespace Shale
                 this.arguments = arguments;
                 this.context = context;
             }
+
+            public float FindMaxVal(List<WellLogSample> list)
+            {
+                if (list.Count == 0)
+                    throw new InvalidOperationException("Empty list");
+                
+                float maxVal = float.MinValue;
+                foreach (WellLogSample type in list)
+                    if (type.Value > maxVal)
+                        maxVal = type.Value;
+
+                return maxVal;
+            }
+
+            public WellLog CreateWellLog(Borehole bh, string name, Template t, List<WellLogSample> tsamples)
+            {
+                WellLog log;
+                using (ITransaction trans = DataManager.NewTransaction())
+                {
+                    WellLogVersion wlVersion = WellLogVersion.NullObject;
+                    //Template t = PetrelProject.WellKnownTemplates.PetrophysicalGroup.Porosity;
+                    WellRoot wellRoot = WellRoot.Get(PetrelProject.PrimaryProject);
+                    LogVersionCollection rootLVColl = wellRoot.LogVersionCollection;
+                    trans.Lock(rootLVColl);
+                    wlVersion = rootLVColl.CreateWellLogVersion(name, t);
+                    trans.Lock(bh);
+                    log = bh.Logs.CreateWellLog(wlVersion);
+                    /*  Build a time array to serve as time log 
+                     *  WellLogSample[] tsamples = new WellLogSample[numpoints];
+                     * for (int i = 0; i < numpoints; i++)
+                     {
+                         double md = top + i * interval;
+                         float val = .002F + i * .001F;
+                         tsamples[i] = new WellLogSample(md, val);
+                     }*/
+
+                    log.Samples = tsamples;
+                    trans.Commit();
+                }
+                return log;
+            } 
+            //Draw Crossplot function 
             public void UpdateCorrelationData2D(WellLog log1, WellLog log2, CorrelationData2D cor)
             {
-
-                /*Шаг 1:Calculation of LogR of all Resistivity logs 
-                        Исходные данные:каротажная кривая сопротивления (LLD) 
-                        Результат: логарифм кривой сопротивления                 */
                 using (ITransaction trans = DataManager.NewTransaction())
                 {
                     trans.Lock(cor);
                     List<Point2> pointList = new List<Point2>();
                     for (int sampleIndex = 0; sampleIndex < log1.SampleCount;sampleIndex++)
                     {
-                        if (!float.IsNaN(log1[sampleIndex].Value) && !float.IsNaN(log2[sampleIndex].Value) && log1[sampleIndex].Value > 0)
+                        if (!float.IsNaN(log1[sampleIndex].Value) && !float.IsNaN(log2[sampleIndex].Value))
                         {
-                            double db_log = Convert.ToSingle(Math.Log(Convert.ToDouble(log1[sampleIndex].Value)));
-                            pointList.Add(new Point2(db_log, log2[sampleIndex].Value));
+                            if (log1[sampleIndex].Value > 0 && log2[sampleIndex].Value >0)
+                                pointList.Add(new Point2(log1[sampleIndex].Value, log2[sampleIndex].Value));
                         }
                     }
-
                     cor.Name = "LogR vs Sonic";
                     cor.NameX = log1.WellLogVersion.Name;
                     cor.NameY = log2.WellLogVersion.Name;
@@ -105,6 +142,22 @@ namespace Shale
             }
             public override void ExecuteSimple()
             {
+                /*Шаг 1:Calculation of LogR of all Resistivity logs 
+                        Исходные данные:каротажная кривая сопротивления (LLD) 
+                        Результат: логарифм кривой сопротивления                 */
+                var samples = arguments.ShaleWellLog.Samples;
+                List<WellLogSample> res_samples = new List<WellLogSample>();
+                List<WellLogSample> tsamples = new List<WellLogSample>();
+                foreach (WellLogSample sample in samples)
+                {
+                    res_samples.Add(sample);
+                    if (sample.Value > 0)
+                    {
+                        float fl_log = Convert.ToSingle(Math.Log(Convert.ToDouble(sample.Value)));
+                        tsamples.Add(new WellLogSample(sample.MD, fl_log));
+                    }
+                }
+                var LogR = CreateWellLog(arguments.Boreholes[0], "LogR", arguments.ShaleWellLog.WellLogVersion.Template, tsamples);
                 CorrelationData2D cor;
                 using (ITransaction trans = DataManager.NewTransaction())
                 {
@@ -115,17 +168,30 @@ namespace Shale
                       Результат:  
                       Кросс плот (ось X- сопротивление, ось Y- акустика)                     */            
                     trans.Lock(PetrelProject.PrimaryProject);
-                    Collection col = PetrelProject.PrimaryProject.CreateCollection("Correlation collection");
-                    
-                    cor = col.CreateCorrelationData2D("Cross plot");
-                    
-                    trans.Commit();              
+                    Collection col = PetrelProject.PrimaryProject.CreateCollection("Correlation collection");            
+                    cor = col.CreateCorrelationData2D("Cross plot");                 
+                    trans.Commit();        
                 }
-                UpdateCorrelationData2D(arguments.ShaleWellLog, arguments.SonicLog, cor);
+                UpdateCorrelationData2D(LogR, arguments.SonicLog, cor);
 
-                // window for crossplot 
+                // creating crossplot window
                 ToggleWindow window = PetrelProject.ToggleWindows.Add(WellKnownWindows.Function);
                 window.ShowObject(cor);
+
+
+                /*// create DLogR проблема с расчетом , MD какой брать и кол-во значений кривых может не совпадать и тд тр  
+                var dtc_samples = arguments.SonicLog.Samples;
+                float max_resval = FindMaxVal(res_samples);
+                foreach (WellLogSample sample in samples)
+                {
+                    if (sample.Value > 0)
+                    {
+                        float fl_log = Convert.ToSingle(Math.Log(Convert.ToDouble(sample.Value / max_resval)) - 2.5*);
+                        tsamples.Add(new WellLogSample(sample.MD, fl_log));
+                    }
+                }*/
+
+
             }
         }
 
@@ -150,6 +216,15 @@ namespace Shale
 
             private Slb.Ocean.Petrel.DomainObject.Well.WellLog shaleWellLog;
             private Slb.Ocean.Petrel.DomainObject.Well.WellLog sonicLog;
+            private List<Borehole> boreholes = new List<Borehole>();
+
+            public List<Borehole> Boreholes
+            {
+                get { return boreholes; }
+                set { boreholes = value; }
+            }
+
+           
 
             public Slb.Ocean.Petrel.DomainObject.Well.WellLog SonicLog
             {
