@@ -6,7 +6,7 @@
   <PluginUri>http://www.pluginuri.info/</PluginUri>
   <PluginId>://Shale.ShalePlugin/1.0.0.0</PluginId>
   <Trust PublicKeyToken="">Default</Trust>
-  <ReleaseDate>2015-10-17</ReleaseDate>
+  <ReleaseDate>2015-10-26</ReleaseDate>
   <Author>Vazgen and Vadim</Author>
   <AppVersion>2014.1</AppVersion>
   <Modules>
@@ -16,7 +16,11 @@
   </Modules>
   <Assemblies>
     <Assembly Name="Shale, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Assembly Name="Slb.Ocean.Petrel.Geology, Version=14.1.0.0, Culture=neutral, PublicKeyToken=14ef4a483ef6a64b" />
+    <Assembly Name="Slb.Ocean.Petrel.Modeling, Version=14.1.0.0, Culture=neutral, PublicKeyToken=14ef4a483ef6a64b" />
     <Assembly Name="Slb.Ocean.Petrel.UI.Controls, Version=14.1.0.0, Culture=neutral, PublicKeyToken=da9605198f529641" />
+    <Assembly Name="Slb.Ocean.Petrel.UI.WellSection, Version=14.1.0.0, Culture=neutral, PublicKeyToken=14ef4a483ef6a64b" />
+    <Assembly Name="Slb.Ocean.Petrel.Well, Version=14.1.0.0, Culture=neutral, PublicKeyToken=14ef4a483ef6a64b" />
   </Assemblies>
   
   <StartMode>Startup</StartMode>

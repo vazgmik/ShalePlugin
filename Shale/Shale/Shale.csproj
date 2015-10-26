@@ -39,8 +39,13 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Slb.Ocean.Petrel.UI.Controls, Version=14.1.0.0, Culture=neutral, PublicKeyToken=da9605198f529641, processorArchitecture=MSIL" />
-    <Reference Include="Slb.Ocean.Petrel.Well, Version=14.3.0.0, Culture=neutral, PublicKeyToken=14ef4a483ef6a64b, processorArchitecture=MSIL">
-      <Private>False</Private>
+    <Reference Include="Slb.Ocean.Petrel.UI.WellSection, Version=14.1.0.0, Culture=neutral, PublicKeyToken=14ef4a483ef6a64b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Program Files (x86)\Schlumberger\Petrel 2014\Public\Slb.Ocean.Petrel.UI.WellSection.dll</HintPath>
+    </Reference>
+    <Reference Include="Slb.Ocean.Petrel.Well, Version=14.1.0.0, Culture=neutral, PublicKeyToken=14ef4a483ef6a64b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Program Files (x86)\Schlumberger\Petrel 2014\Public\Slb.Ocean.Petrel.Well.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -77,6 +82,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="ShaleCommandHandler.cs" />
     <Compile Include="ShaleModule.cs" />
@@ -119,12 +129,26 @@
       <DependentUpon>ShaleWorkstepUI.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\DataSources\Slb.Ocean.Petrel.Well.SavedSearchManifest.datasource" />
+    <None Include="Properties\DataSources\Slb.Ocean.Petrel.Well.SavedSearchSpecRegistrationToken.datasource" />
+    <None Include="Properties\DataSources\Slb.Ocean.Petrel.Well.SavedSearchSystem.datasource" />
+    <None Include="Properties\DataSources\Slb.Ocean.Petrel.Well.TrajectoryManifest.datasource" />
+    <None Include="Properties\DataSources\Slb.Ocean.Petrel.Well.TrajectoryService.datasource">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\DataSources\Slb.Ocean.Petrel.Well.WellSystem.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>del "$(ProjectDir)\plugin.xml"
-"%25OCEAN2014HOME%25\PluginPackager.exe" /g "$(TargetPath)" "$(ProjectDir)\plugin.xml" "%25OCEAN2014HOME_x64%25\petrel.exe"
-"%25OCEAN2014HOME%25\PluginPackager.exe" /m "$(ProjectDir)\plugin.xml" "%25OCEAN2014HOME_x64%25\petrel.exe" "$(TargetDir)"
-</PostBuildEvent>
+"%25OCEAN2014HOME%25\PluginPackager.exe" /g "$(TargetPath)" "$(ProjectDir)\plugin.xml" "%25OCEAN2014HOME%25\petrel.exe"
+"%25OCEAN2014HOME%25\PluginPackager.exe" /m "$(ProjectDir)\plugin.xml" "%25OCEAN2014HOME%25\petrel.exe" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
 		Other similar extension points exist, see Microsoft.Common.targets.

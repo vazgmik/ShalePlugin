@@ -39,10 +39,7 @@ namespace Shale
         /// (eg: datasource, plugin)
         /// </summary>
         public void Integrate()
-        {
-            
-            // TODO:  Add ShaleModule.Integrate implementation
-            
+        {                    
             // Register ShaleCommandHandler
             PetrelSystem.CommandManager.CreateCommand(ShaleCommandHandler.ID, new Shale.ShaleCommandHandler());
             
@@ -60,10 +57,7 @@ namespace Shale
         /// (eg: settingspages, treeextensions)
         /// </summary>
         public void IntegratePresentation()
-        {
-
-            // TODO:  Add ShaleModule.IntegratePresentation implementation
-            
+        {    
             // Add Ribbon Configuration file
             PetrelSystem.ConfigurationService.AddConfiguration(Shale.Properties.Resources.OceanRibbon);
             // Register Menu Item for Shale.ShaleCommand command. Will be available in Petrel Classic mode.
@@ -77,7 +71,6 @@ namespace Shale
         /// </summary>
         public void Disintegrate()
         {
-            // TODO:  Add ShaleModule.Disintegrate implementation
             // Unregister ShaleWorkstep
             PetrelSystem.WorkflowEditor.RemoveUIFactory<ShaleWorkstep.Arguments>();
             PetrelSystem.ProcessDiagram.Remove(m_shaleworkstepInstance);

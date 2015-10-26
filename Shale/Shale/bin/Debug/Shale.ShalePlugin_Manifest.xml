@@ -1,9 +1,13 @@
 <Deployment>
   <Files>
     <File Name="Shale.dll" />
+    <File Name="Shale.dll.config" />
     <File Name="Shale.pdb" />
     <File Name="Shale.ShalePlugin_Manifest.xml" />
+    <File Name="Slb.Ocean.Petrel.Geology.dll" />
+    <File Name="Slb.Ocean.Petrel.Modeling.dll" />
     <File Name="Slb.Ocean.Petrel.UI.Controls.dll" />
-    <File Name="Slb.Ocean.Petrel.UI.Controls.xml" />
+    <File Name="Slb.Ocean.Petrel.UI.WellSection.dll" />
+    <File Name="Slb.Ocean.Petrel.Well.dll" />
   </Files>
 </Deployment>
