@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ModelingDataSource Type="IDataSource" Version="4.0">
+  <LastId>0</LastId>
+  <StructuralModelCollectionImpl Type="IDomainObjectImpl" Version="4.0">
+    <DroidString>://StructuralModelingData/Type=IStructuralModelCollectionImpl&amp;Id=74a6bdc82b054b83b185f3e95bd4a279</DroidString>
+    <ModelingEntityId>74a6bdc82b054b83b185f3e95bd4a279</ModelingEntityId>
+    <Name>Structural modeling root Tuesday 10/20/2015 22:06:49</Name>
+    <Color>0</Color>
+    <LastModificationTime>635809756096846883</LastModificationTime>
+    <LastModificationUser>Vaz</LastModificationUser>
+  </StructuralModelCollectionImpl>
+</ModelingDataSource>

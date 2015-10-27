@@ -2,15 +2,15 @@
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartAction>Program</StartAction>
-    <StartProgram>D:\Program Files %28x86%29\Schlumberger\Petrel 2014\Petrel.exe</StartProgram>
-    <StartWorkingDirectory>D:\Program Files %28x86%29\Schlumberger\Petrel 2014</StartWorkingDirectory>
+    <StartProgram>C:\Program Files %28x86%29\Schlumberger\Petrel 2014\Petrel.exe</StartProgram>
+    <StartWorkingDirectory>C:\Program Files %28x86%29\Schlumberger\Petrel 2014\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
-    <ReferencePath>C:\Program Files\Schlumberger\Petrel 2014\;C:\Program Files\Schlumberger\Petrel 2014\Public\;C:\Program Files\Schlumberger\Petrel 2014\Public\EnterpriseLibrary\;D:\Program Files (x86)\Schlumberger\Petrel 2014\;D:\Program Files (x86)\Schlumberger\Petrel 2014\Public\EnterpriseLibrary\;D:\Program Files (x86)\Schlumberger\Petrel 2014\Public\</ReferencePath>
+    <ReferencePath>C:\Program Files (x86)\Schlumberger\Petrel 2014\;C:\Program Files (x86)\Schlumberger\Petrel 2014\Public\;C:\Program Files (x86)\Schlumberger\Petrel 2014\Public\EnterpriseLibrary\;D:\Program Files (x86)\Schlumberger\Petrel 2014\;D:\Program Files (x86)\Schlumberger\Petrel 2014\Public\EnterpriseLibrary\;D:\Program Files (x86)\Schlumberger\Petrel 2014\Public\</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <StartAction>Program</StartAction>
-    <StartProgram>C:\Program Files\Schlumberger\Petrel 2014\Petrel.exe</StartProgram>
-    <StartWorkingDirectory>C:\Program Files\Schlumberger\Petrel 2014\</StartWorkingDirectory>
+    <StartProgram>C:\Program Files %28x86%29\Schlumberger\Petrel 2014\Petrel.exe</StartProgram>
+    <StartWorkingDirectory>C:\Program Files %28x86%29\Schlumberger\Petrel 2014\</StartWorkingDirectory>
   </PropertyGroup>
 </Project>

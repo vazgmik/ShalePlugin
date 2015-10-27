@@ -15,7 +15,8 @@ namespace Shale
     class ShaleCommandHandler : SimpleCommandHandler
     {
         public static string ID = "Shale.ShaleCommand";
-        private WorkflowContext ctnxt = new WorkstepProcessWrapper.Context(); 
+        private WorkflowContext ctnxt = new WorkstepProcessWrapper.Context(); 
+
         #region SimpleCommandHandler Members
 
         public override bool CanExecute(Slb.Ocean.Petrel.Contexts.Context context)

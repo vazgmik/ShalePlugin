@@ -12,3 +12,17 @@ C:\Users\Vaz\Documents\GitHub\ShalePlugin\Shale\Shale\bin\Debug\Slb.Ocean.Petrel
 C:\Users\Vaz\Documents\GitHub\ShalePlugin\Shale\Shale\obj\Debug\Shale.csprojResolveAssemblyReference.cache
 C:\Users\Vaz\Documents\GitHub\ShalePlugin\Shale\Shale\bin\Debug\Slb.Ocean.Petrel.UI.WellSection.dll
 C:\Users\Vaz\Documents\GitHub\ShalePlugin\Shale\Shale\bin\Debug\Shale.dll.config
+D:\git\ShalePlugin\Shale\Shale\bin\Debug\Shale.dll.config
+D:\git\ShalePlugin\Shale\Shale\bin\Debug\Shale.dll
+D:\git\ShalePlugin\Shale\Shale\bin\Debug\Shale.pdb
+D:\git\ShalePlugin\Shale\Shale\bin\Debug\Slb.Ocean.Petrel.UI.Controls.dll
+D:\git\ShalePlugin\Shale\Shale\bin\Debug\Slb.Ocean.Petrel.UI.WellSection.dll
+D:\git\ShalePlugin\Shale\Shale\bin\Debug\Slb.Ocean.Petrel.Well.dll
+D:\git\ShalePlugin\Shale\Shale\bin\Debug\Slb.Ocean.Petrel.Modeling.dll
+D:\git\ShalePlugin\Shale\Shale\bin\Debug\Slb.Ocean.Petrel.Geology.dll
+D:\git\ShalePlugin\Shale\Shale\obj\Debug\Shale.csprojResolveAssemblyReference.cache
+D:\git\ShalePlugin\Shale\Shale\obj\Debug\Shale.Properties.Resources.resources
+D:\git\ShalePlugin\Shale\Shale\obj\Debug\Shale.ShaleWorkstepUI.resources
+D:\git\ShalePlugin\Shale\Shale\obj\Debug\Shale.csproj.GenerateResource.Cache
+D:\git\ShalePlugin\Shale\Shale\obj\Debug\Shale.dll
+D:\git\ShalePlugin\Shale\Shale\obj\Debug\Shale.pdb

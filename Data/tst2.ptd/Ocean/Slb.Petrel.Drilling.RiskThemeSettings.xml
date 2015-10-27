@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RiskTheme version="2014.1">
+  <ColorMapType>SeverityLevel</ColorMapType>
+  <PatternMapType>ProbabilityLevel</PatternMapType>
+  <MappingOfRiskSeverity>
+    <ColorMapping>
+      <index0 SeverityLevel="Unknown" Color="Gray" />
+      <index1 SeverityLevel="Light" Color="Blue" />
+      <index2 SeverityLevel="Serious" Color="Green" />
+      <index3 SeverityLevel="Major" Color="Goldenrod" />
+      <index4 SeverityLevel="Catastrophic" Color="Magenta" />
+      <index5 SeverityLevel="Multi catastrophic" Color="Red" />
+    </ColorMapping>
+    <PatternMapping>
+      <index0 SeverityLevel="Unknown" Pattern="Solid" />
+      <index1 SeverityLevel="Light" Pattern="Brick" />
+      <index2 SeverityLevel="Serious" Pattern="Diagonal" />
+      <index3 SeverityLevel="Major" Pattern="Cross" />
+      <index4 SeverityLevel="Catastrophic" Pattern="Dashed" />
+      <index5 SeverityLevel="Multi catastrophic" Pattern="Weave" />
+    </PatternMapping>
+  </MappingOfRiskSeverity>
+  <MappingOfRiskProbability>
+    <ColorMapping>
+      <index0 ProbabilityLevel="Unknown" Color="Red" />
+      <index1 ProbabilityLevel="Improbable" Color="Yellow" />
+      <index2 ProbabilityLevel="Unlikely" Color="Lime" />
+      <index3 ProbabilityLevel="Possible" Color="Cyan" />
+      <index4 ProbabilityLevel="Likely" Color="Blue" />
+      <index5 ProbabilityLevel="Probable" Color="Magenta" />
+    </ColorMapping>
+    <PatternMapping>
+      <index0 ProbabilityLevel="Unknown" Pattern="Solid" />
+      <index1 ProbabilityLevel="Improbable" Pattern="Weave" />
+      <index2 ProbabilityLevel="Unlikely" Pattern="Dashed" />
+      <index3 ProbabilityLevel="Possible" Pattern="Cross" />
+      <index4 ProbabilityLevel="Likely" Pattern="Diagonal" />
+      <index5 ProbabilityLevel="Probable" Pattern="Brick" />
+    </PatternMapping>
+  </MappingOfRiskProbability>
+  <MappingOfRiskCategory>
+    <ColorMapping>
+      <index0 Category="Bit" Color="Cyan" />
+      <index1 Category="Casing" Color="127, 0, 255" />
+      <index2 Category="Completion" Color="Blue" />
+      <index3 Category="Directional drilling" Color="SpringGreen" />
+      <index4 Category="Equipment failure" Color="0, 127, 255" />
+      <index5 Category="HSE" Color="255, 0, 127" />
+      <index6 Category="Hydraulics" Color="255, 127, 0" />
+      <index7 Category="Mechanical" Color="Yellow" />
+      <index8 Category="Other" Color="Magenta" />
+      <index9 Category="Time related" Color="Chartreuse" />
+      <index10 Category="Unknown" Color="Red" />
+      <index11 Category="Wellbore stability" Color="Lime" />
+    </ColorMapping>
+    <PatternMapping>
+      <index0 Category="Bit" Pattern="Checker" />
+      <index1 Category="Casing" Pattern="Frame" />
+      <index2 Category="Completion" Pattern="Divot" />
+      <index3 Category="Directional drilling" Pattern="Weave" />
+      <index4 Category="Equipment failure" Pattern="Confetti" />
+      <index5 Category="HSE" Pattern="Shingle" />
+      <index6 Category="Hydraulics" Pattern="Brick" />
+      <index7 Category="Mechanical" Pattern="Diagonal" />
+      <index8 Category="Other" Pattern="Horizontal" />
+      <index9 Category="Time related" Pattern="Cross" />
+      <index10 Category="Unknown" Pattern="Solid" />
+      <index11 Category="Wellbore stability" Pattern="Dashed" />
+    </PatternMapping>
+  </MappingOfRiskCategory>
+  <MappingOfRiskType>
+    <ColorMapping>
+      <index0 Type="Best practice" Color="Blue" />
+      <index1 Type="Event" Color="Lime" />
+      <index2 Type="Lessons learned" Color="Magenta" />
+      <index3 Type="Near miss" Color="Cyan" />
+      <index4 Type="Other" Color="255, 0, 127" />
+      <index5 Type="Risk" Color="Yellow" />
+      <index6 Type="Unknown" Color="Red" />
+    </ColorMapping>
+    <PatternMapping>
+      <index0 Type="Best practice" Pattern="Dashed" />
+      <index1 Type="Event" Pattern="Diagonal" />
+      <index2 Type="Lessons learned" Pattern="Weave" />
+      <index3 Type="Near miss" Pattern="Cross" />
+      <index4 Type="Other" Pattern="Checker" />
+      <index5 Type="Risk" Pattern="Brick" />
+      <index6 Type="Unknown" Pattern="Solid" />
+    </PatternMapping>
+  </MappingOfRiskType>
+</RiskTheme>

@@ -1,0 +1,29 @@
+<Petrel>
+<project>
+	<name>tst2.pet</name>
+	<Xmin>405438.62700000</Xmin>
+	<Xmax>412551.57300000</Xmax>
+	<Ymin>6919026.93700000</Ymin>
+	<Ymax>6927805.34400000</Ymax>
+	<Zmin>-3139.26020000</Zmin>
+	<Zmax>40.08000000</Zmax>
+	<UnitXY>m</UnitXY>
+	<UnitZ>m</UnitZ>
+	<AreaUnit>m2</AreaUnit>
+	<VolumeUnit>m3</VolumeUnit>
+	<TimeUnit>ms</TimeUnit>
+	<VelocityUnit>m/s</VelocityUnit>
+	<SimulationUnitSystem>ECLIPSE-Metric</SimulationUnitSystem>
+	<Projection>UNDEF</Projection>
+	<Datum>MSL</Datum>
+	<SeismicReferenceDatum>0.00000000</SeismicReferenceDatum>
+	<Country></Country>
+	<Area></Area>
+	<Block></Block>
+	<License></License>
+	<Comments></Comments>
+	<CharacterSet>1251  (ANSI - кириллица)</CharacterSet>
+	<Version>2014.1</Version>
+	<Build>May 28 2014</Build>
+</project>
+</Petrel>
