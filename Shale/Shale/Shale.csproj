@@ -117,6 +117,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\IDB_BUTTON_MS_ERROR.PNG" />
+    <None Include="Resources\IDB_BUTTON_MS_WARNING.PNG" />
+    <None Include="Resources\IDB_BUTTON_CANCEL.PNG" />
+    <None Include="Resources\IDB_BUTTON_APPLY.PNG" />
     <DesignData Include="OceanResources\OceanRibbon.xml" />
     <Content Include="OceanResources\Readme.txt" />
   </ItemGroup>

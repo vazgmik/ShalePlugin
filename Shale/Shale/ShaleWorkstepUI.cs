@@ -13,9 +13,9 @@ using Slb.Ocean.Geometry;
 using System.Data;
 using Slb.Ocean.Petrel.DomainObject;
 using Slb.Ocean.Petrel.DomainObject.Basics;
-
 using System.Collections;
 using Slb.Ocean.Petrel.UI.WellSection;
+using System.Linq;
 
 namespace Shale
 {
@@ -25,18 +25,20 @@ namespace Shale
     /// </summary>
     partial class ShaleWorkstepUI : UserControl
     {
+        
         private ShaleWorkstep workstep;
         /// <summary>
         /// The argument package instance being edited by the UI.
         /// </summary>
-        private ShaleWorkstep.Arguments args;    
 
+        private ShaleWorkstep.Arguments args;
+        private FormatTemplate wsTemplate;
         private List<MyData> res = new List<MyData>();
         private List<MyData> vitr = new List<MyData>();
         private List<MyData> son = new List<MyData>();
         private List<MyData> den = new List<MyData>();
         private List<MyData> por = new List<MyData>();
-  
+
         //temporary arguments
         private ShaleWorkstep.Arguments tmpargs = new ShaleWorkstep.Arguments();
         /// <summary>
@@ -56,8 +58,7 @@ namespace Shale
         public ShaleWorkstepUI(ShaleWorkstep workstep, ShaleWorkstep.Arguments args, WorkflowContext context)
         {
             InitializeComponent();
-
-            btn_Apply.Image = PetrelImages.Apply;
+            btn_Apply.Image = Shale.Properties.Resources.IDB_BUTTON_APPLY;
             btn_DelBoreHole.Image = PetrelImages.RowDelete;
 
             this.workstep = workstep;
@@ -65,47 +66,54 @@ namespace Shale
             this.context = context;
             
             workstep.CopyArgumentPackage(args, tmpargs);
+            AddMdRange();
         }
 
 
         //create template for wellsection
         private void CreateFormatTemplate()
-        {
-            FormatTemplate wsTemplate;
-            string templateName = "My WSTemplate";
-            string collName = "My WSTemplates";
+        {    
+            string templateName = "TOCWSTemplate";
+            string collName = "TOCWSTemplates";
             //WellSectionService 
-            
-            //FormatTemplateCollection root = WellSectionService.FormatTemplateCollection;
 
-            //using (ITransaction trans = DataManager.NewTransaction())
-            //{
-            //    trans.Lock(root);
-            //    collName = FormatTemplateCollection.GetUniqueFormatTemplateCollectionName(collName);
-            //    FormatTemplateCollection subColl;
-            //    subColl = root.CreateFormatTemplateCollection(collName);
-            //    templateName = FormatTemplateCollection.GetUniqueFormatTemplateName(templateName);
-            //    wsTemplate = subColl.CreateFormatTemplate(templateName);
-            //    trans.Commit();
-            //}
+            FormatTemplateCollection root = WellSectionProject.FormatTemplateCollection;
+
+            using (ITransaction trans = DataManager.NewTransaction())
+            {
+                trans.Lock(root);
+                collName = FormatTemplateCollection.GetUniqueFormatTemplateCollectionName(collName);
+                FormatTemplateCollection subColl;
+                subColl = root.CreateFormatTemplateCollection(collName);
+                templateName = FormatTemplateCollection.GetUniqueFormatTemplateName(templateName);
+                wsTemplate = subColl.CreateFormatTemplate(templateName);
+                trans.Commit();
+            }
         }
+
+
+        //add vals to dictionary for MD range proccessing
+        public void AddMdRange() {
+            string [] labels = {"res","son","den","por"};
+            foreach(var s in  labels){
+                tmpargs.Md_range.Add( s,new double[2]);
+            }
+        }
+
+        public void FillDic(string str, double start, double end)
+        {
+            tmpargs.Md_range[str][0] = start;
+            tmpargs.Md_range[str][1] = end;
+        }
+
         private void btn_Apply_Click(object sender, EventArgs e)
         {
-            //dictionaty indices
-            //List<KeyValuePair<int, String>> List_ind = new List<KeyValuePair<int, String>>();
-            //for (int i = 0; i < bholes.Count; i++)
-            //{
-            //    if (!(chbSonic.Checked && List_son[i] != null ))
-            //        List_ind.Add(new KeyValuePair<int, string>(i, "sonic"));
-            //    if (!(chbDensity.Checked && List_den[i]!=null ))
-            //        List_ind.Add(new KeyValuePair<int, string>(i, "density"));
-            //    if (!(chbPorosity.Checked && List_por[i]!=null))
-            //        List_ind.Add(new KeyValuePair<int, string>(i, "porosity"));
-            //}
-          
-            
+            FillDic("res", Convert.ToDouble(MD_st_res.Text), Convert.ToDouble(MD_en_res.Text));
+            FillDic("son", Convert.ToDouble(MD_st_son.Text), Convert.ToDouble(MD_en_son.Text));
+            FillDic("den", Convert.ToDouble(MD_st_dens.Text), Convert.ToDouble(MD_en_dens.Text));
+            FillDic("por", Convert.ToDouble(MD_st_por.Text), Convert.ToDouble(MD_en_por.Text));
+
             tmpargs.Boreholes = bholes;
-        
             tmpargs.List_den = den;
             tmpargs.List_por = por;
             tmpargs.List_res = res;
@@ -117,363 +125,74 @@ namespace Shale
                 Executor exec = workstep.GetExecutor(tmpargs, new WorkstepProcessWrapper.RuntimeContext());
                 exec.ExecuteSimple();
             }
+
             workstep.CopyArgumentPackage(tmpargs, args);
             context.OnArgumentPackageChanged(this, new WorkflowContext.ArgumentPackageChangedEventArgs());
 
             if (chbWellSection.Checked)
             {
-                //Create WellSection
-                //CreateFormatTemplate();
-                //WellSectionWindow wsw = WellSectionWindow.CreateWindow(wsTemplate);
+                //Creating WellSection using Template
+                CreateFormatTemplate();
+                WellSectionWindow wsw = WellSectionWindow.CreateWindow(wsTemplate);         
+                Helper.SetNameWindow(wsw, "TOC_Analysis_WellSection");
+                wsw.Domain = Slb.Ocean.Petrel.DomainObject.Domain.MD;
+                foreach (Borehole bhole in tmpargs.Boreholes)
+                {
+                    wsw.ShowObject(bhole);
+                }
 
-                //wsw.Domain = Slb.Ocean.Petrel.DomainObject.Domain.MD;
+                var well_ver = args.Boreholes[0].LogCollection.LogVersionCollection.WellLogVersions.ToList();
+                for (int start = well_ver.Count-1; start >= well_ver.Count - args.Log_count; --start)
+                {
+                    wsw.ShowObject(well_ver[start]);
+                }
 
-                //wsw.ShowObject(tmpargs.Well);
-                //wsw.ShowObject(tmpargs.Hfrac);
-                //wsw.ShowObject(tmpargs.Well.Completions.CasingStrings);
-                //wsw.ShowObject(tmpargs.Well.Completions.Perforations);
             }
 
         }
+        public void InitForm() {
+            Set_MD_StartEnd("Resistivity",false);
+            Set_MD_StartEnd("Sonic",false);
+            Set_MD_StartEnd("Density",false);
+            Set_MD_StartEnd("Porosity", false);
 
-        //delete Borehole button
-        private void btn_DelBoreHole_Click(object sender, EventArgs e)
-        {
-            clearCombos();
-            var selItems = list_Boreholes.SelectedItems;
-            var tmp = new List<ListBoxItem>();
-            int index = 0;
-            foreach (var cur in selItems)
-                tmp.Add(cur);
-            foreach (var cur in tmp)
-            {
-                list_Boreholes.Items.Remove(cur);
-                index = bholes.IndexOf(cur.Value as Borehole);
+           /* MD_en_dens.ResetText();
+            MD_en_por.ResetText();
+            MD_en_son.ResetText();
+            MD_st_dens.ResetText();
+            MD_st_por.ResetText();
+            MD_st_son.ResetText();
+            MD_st_res.ResetText();
+            MD_en_res.ResetText();*/
 
-                res.RemoveAt(index);
-                vitr.RemoveAt(index);
-                den.RemoveAt(index);
-                son.RemoveAt(index);
-                por.RemoveAt(index);
 
-                bholes.Remove(cur.Value as Borehole);           
-            }
-
-            if(list_Boreholes.Items.Count == 0)
-            {
-                res.Clear();
-                vitr.Clear();
-                den.Clear();
-                son.Clear();
-                por.Clear();
-            }
             chbPorosity.Text = "Porosity";
             chbPorosity.Checked = false;
-            WARNINGPOR.ResetText();
             cmbPorosity.Enabled = false;
+            chbPorosity.Enabled = false;
+            WARNINGPOR.Image = null;
+
             chbSonic.Text = "Sonic";
-            WARNINGSON.ResetText();
             cmbSonic.Enabled = false;
             chbSonic.Checked = false;
+            chbSonic.Enabled = false;
+            WARNINGSON.Image = null;
+
             chbDensity.Text = "Density";
-            WARNINGDEN.Image = null;
             cmbDensity.Enabled = false;
             chbDensity.Checked = false;
-            cmbResistivity.Enabled = false;
-            label4.Text = "ResistivityLog";
-            cmbVitrinite.Enabled = false;
-            label5.Text = "VitriniteLog";
-            WARNINGVITR.Image = null;
-            WARNINRES.Image = null;
-            chbSonic.Enabled = false;
             chbDensity.Enabled = false;
-            chbPorosity.Enabled = false;
+            WARNINGDEN.Image = null;
 
+            cmbResistivity.Enabled = false;
+            res_Label.Text = "ResistivityLog";
+            WARNINGRES.Image = null;
+
+            cmbVitrinite.Enabled = false;
+            vitr_Label.Text = "VitriniteLog";
+            WARNINGVITR.Image = null;          
         }
-
-
-        private void CorrectType(Template templ, TemplateType type, ref List<MyData> list, WellLog wl, int index)
-        {
-            if (templ.TemplateType.Equals(type))
-            {
-                if (list.Count == index)
-                    list.Add(new MyData(1, wl));
-                else if (list.Count == index+1)
-                {
-                    int count = list[index].Count;
-                    list[index] = new MyData(++count, list[index].Log);
-                }
-            }
-
-        }
-
-        private void CheckAddNull(ref List<MyData> list, int index)
-        {
-            if (list.Count == index)
-                list.Add(null);
-        }
-
-        private void updateBoreholeList(Borehole borehole, int index)
-        {
-            if (!bholes.Contains(borehole))
-            {             
-                foreach (WellLog wl in borehole.LogCollection.WellLogs)
-                {
-                    var templ = wl.WellLogVersion.Template;
-                    CorrectType(templ, TemplateType.ResistivityDeep, ref res, wl, index);
-                    CorrectType(templ, TemplateType.Ssonic, ref son, wl, index);
-                    CorrectType(templ, TemplateType.Density, ref den, wl, index);
-                    CorrectType(templ, TemplateType.Porosity, ref por, wl, index);
-                    CorrectType(templ, TemplateType.VitriniteReflectance, ref vitr, wl, index);
-
-                }
-
-                CheckAddNull(ref res, index);
-                CheckAddNull(ref son, index);
-                CheckAddNull(ref den, index);
-                CheckAddNull(ref por, index);
-                CheckAddNull(ref vitr, index);
-
-                String resist = res[index] == null ? "0" : res[index].Count.ToString();
-                String vitrin = vitr[index] == null ? "0" : vitr[index].Count.ToString();
-                String dens = den[index] == null ? "0" : den[index].Count.ToString();
-                String por_ = por[index] == null ? "0" : por[index].Count.ToString();
-                String sonn = son[index] == null ? "0" : son[index].Count.ToString();
-
-                IImageInfoFactory f = CoreSystem.GetService<IImageInfoFactory>(borehole);
-                var item = new ListBoxItem();
-                item.Text = string.Format("{0} (LLD: {1}; Vitrinite: {2},DENS:{3},POR:{4},SONIC:{5})", borehole.Name, resist, vitrin,dens,por_,sonn);
-
-                /*if (res[index] == null || vitr[index] == null || res[index].Count > 1 || vitr[index].Count > 1  )
-                {
-                    item.Image = PetrelImages.Warning;
-                }
-                else if (den[index] != null && den[index].Count == 1 || por[index] != null && por[index].Count == 1 || son[index] != null && son[index].Count == 1)
-                    item.Image = PetrelImages.Apply;//f.GetImageInfo(borehole).TypeImage;
-                else
-                    item.Image = PetrelImages.Warning;
-                */
-                item.Value = borehole;
-                list_Boreholes.Items.Add(item);
-                bholes.Add(borehole);
-            }
-        }
-
-
-        //drag drop for boreholes
-        private void drpBorehole_DragDrop(object sender, DragEventArgs e)
-        {
-            var rawData = e.Data.GetData(typeof(object));
-            switch (rawData.GetType().Name)
-            {
-                case "Borehole":
-                    {
-                        updateBoreholeList(rawData as Borehole, bholes.Count);
-                        break;
-                    }
-                case "BoreholeCollection":
-                    {
-                        var boreholes = rawData as BoreholeCollection;
-                        foreach (var borehole in boreholes)
-                            updateBoreholeList(borehole, bholes.Count);
-                        break;
-                    }
-                default:
-                    PetrelLogger.ErrorBox("Object is not a Borehole!");
-                    break;
-            }
-        }
-
-        private void warning_check(int index, List<MyData> rr,ref Label war) {
-            war.Text = "       ";
-            if (rr[index] == null )
-                war.Image = PetrelImages.Cancel;
-            else if (rr[index].Count > 1)
-                war.Image = PetrelImages.Warning;
-            else
-                war.Image = PetrelImages.Apply;
-
-        
-        }
-        private void SelItems_Change(object sender, EventArgs e)
-        {
-            
-            clearCombos();
-            var lst_box = sender as Slb.Ocean.Petrel.UI.Controls.ListBox;
-            var sel_items = lst_box.SelectedItems;
-
-            if (!OneSelectedItem())
-            {
-                cmbResistivity.Enabled = false;
-                cmbVitrinite.Enabled = false;
-                cmbDensity.Enabled = false;
-                cmbPorosity.Enabled = false;
-                cmbSonic.Enabled = false;
-            }
-            else
-            {
-                foreach (var cur in sel_items)
-                {
-                    if (cur.Selected)
-                    {
-                        Borehole borehole = cur.Value as Borehole;
-                        var logs = borehole.LogCollection.WellLogs;
-                        foreach (WellLog wl in logs)
-                        {
-                            var templ = wl.WellLogVersion.Template;
-                            if (templ.TemplateType.Equals(TemplateType.ResistivityDeep) || templ.TemplateType.Equals(TemplateType.VitriniteReflectance) ||
-                                templ.TemplateType.Equals(TemplateType.Density) || templ.TemplateType.Equals(TemplateType.Ssonic) || templ.TemplateType.Equals(TemplateType.Porosity))
-                            {
-                                IImageInfoFactory f = CoreSystem.GetService<IImageInfoFactory>(wl);
-                                var cmbitem = new ComboBoxItem();
-                                cmbitem.Text = string.Format("{0} ({1})", wl.Name, templ.TemplateType);
-                                cmbitem.Image = f.GetImageInfo(wl).TypeImage;
-                                cmbitem.Value = wl;
-
-                                if (templ.TemplateType.Equals(TemplateType.ResistivityDeep))
-                                    cmbResistivity.Items.Add(cmbitem);
-                                else if (templ.TemplateType.Equals(TemplateType.VitriniteReflectance))
-                                    cmbVitrinite.Items.Add(cmbitem);
-                                else if (templ.TemplateType.Equals(TemplateType.Density))
-                                    cmbDensity.Items.Add((cmbitem));
-                                else if (templ.TemplateType.Equals(TemplateType.Ssonic))
-                                    cmbSonic.Items.Add(cmbitem);
-                                else
-                                    cmbPorosity.Items.Add(cmbitem);
-                            }
-                        }
-                        var index = bholes.IndexOf(cur.Value as Borehole);
-                        warning_check(index, res, ref WARNINRES);
-                        if (cmbResistivity.Items.Count > 1)
-                        {
-                            label4.Text = "ResistivityLog (Default)";
-                            cmbResistivity.SelectedIndex = 0;
-                            cmbResistivity.Enabled = true;
-                        }
-                        else if (cmbResistivity.Items.Count == 1)
-                        {
-                            label4.Text = "ResistivityLog";
-                            cmbResistivity.SelectedIndex = 0;
-                            cmbResistivity.Enabled = true;
-                        }
-                        else
-                        {
-                            label4.Text = "ResistivityLog"; 
-                            cmbResistivity.Enabled = false;
-
-                        }
-                        warning_check(index, vitr, ref WARNINGVITR);
-                        if (cmbVitrinite.Items.Count > 1)
-                        {
-                            label5.Text = "VitriniteLog (Default)";
-                            cmbVitrinite.SelectedIndex = 0;
-                            cmbVitrinite.Enabled = true;
-                        }
-                        else if (cmbVitrinite.Items.Count == 1)
-                        {
-                            label5.Text = "VitriniteLog";
-                            cmbVitrinite.SelectedIndex = 0;
-                            cmbVitrinite.Enabled = true;
-                        }
-                        else
-                        {
-                            label5.Text = "VitriniteLog";
-                            cmbVitrinite.Enabled = false;
-
-                        }
-                        chbPorosity.Text = "Porosity";
-                        chbPorosity.Checked = false;
-                        WARNINGPOR.ResetText();
-                        cmbPorosity.Enabled = false;
-                        chbSonic.Text = "Sonic";
-                        WARNINGSON.ResetText();
-                        cmbSonic.Enabled = false;
-                        chbSonic.Checked = false;
-                        chbDensity.Text = "Density";
-                        WARNINGDEN.Image = null;
-                        cmbDensity.Enabled = false;
-                        chbDensity.Checked = false;
-
-                        if (cmbResistivity.Enabled && cmbVitrinite.Enabled)
-                        {
-                            if (cmbSonic.Items.Count >= 1)
-                                chbSonic.Enabled = true;
-                            else
-                                chbSonic.Enabled = false;
-                            if (cmbDensity.Items.Count >= 1)
-                                chbDensity.Enabled = true;
-                            else
-                                chbDensity.Enabled = false;
-                            if (cmbPorosity.Items.Count >= 1)
-                                chbPorosity.Enabled = true;
-                            else
-                                chbPorosity.Enabled = false;
-                        }
-                        else {
-                            chbSonic.Enabled = false;
-                            chbPorosity.Enabled = false;
-                            chbDensity.Enabled = false;
-                        }
-                    }
-                }
-            }
-        }
-
-        private void cmbResistivity_SelectedValueChanged(object sender, EventArgs e)
-        {
-            var combo = sender as Slb.Ocean.Petrel.UI.Controls.ComboBox;
-            if (combo.SelectedIndex > 0)
-            {
-                label4.Text = "ResistivityLog";
-                WARNINRES.Image = PetrelImages.Apply;
-            }
-            /*combo.Enabled = false;
-            var sel_items = list_Boreholes.SelectedItems;
-            foreach (var cur in sel_items)
-            {
-                if (cur.Selected)
-                {
-                    int index = bholes.IndexOf(cur.Value as Borehole);
-                   
-                    if (res[index] != null)
-                    {
-                        String resist = res[index] == null ? "0" : res[index].Count.ToString();
-                        String vitrin = vitr[index] == null ? "0" : vitr[index].Count.ToString();
-                        String dens = den[index] == null ? "0" : den[index].Count.ToString();
-                        String por_ = por[index] == null ? "0" : por[index].Count.ToString();
-                        String sonn = son[index] == null ? "0" : son[index].Count.ToString();
-                        Borehole bhole = list_Boreholes.Items[index].Value as Borehole;
-                        res[index] = new MyData(1,combo.SelectedValue as WellLog);
-                        list_Boreholes.Items[index].Text = string.Format("{0} (LLD: {1}; Vitrinite: {2},DENS:{3},POR:{4},SONIC:{5})", bhole.Name, resist, vitrin, dens, por_, sonn); 
-                        /*if (vitr[index] != null && vitr[index].Count==1)
-                            list_Boreholes.Items[index].Image = PetrelImages.Apply;
-                 }
-                }
-            }*/   
-                         
-        }
-
-        //checkbox Sonic
-
-
-        //combobox Sonic
-        private void cmbSonic_SelectedValueChanged(object sender, EventArgs e)
-        {
-            if (OneSelectedItem())
-            {
-                var sel_items = list_Boreholes.SelectedItems;
-                foreach (var cur in sel_items)
-                {
-                    if (cur.Selected)
-                    {
-                        int index = bholes.IndexOf(cur.Value as Borehole);
-                        son[index] = new MyData(1,cmbSonic.SelectedValue as WellLog);
-                        cmbSonic.Enabled = false;
-                    }
-                }     
-            }
-        }
-
+    
         private bool OneSelectedItem()
         {
             var sel_items = list_Boreholes.SelectedItems;
@@ -501,259 +220,534 @@ namespace Shale
             cmbSonic.Text = "";
         }
 
-        private void chbSonic_CheckStateChanged(object sender, EventArgs e)
-        {
-            //List<int> indexx = new List<int>();
-            bool flag = false;
-            var sel_items = list_Boreholes.SelectedItems;
-            if (chbSonic.Checked)
-            {
-                if (OneSelectedItem())
-                {
-                    foreach (var cur in sel_items)
-                    {
-                        int index = bholes.IndexOf(cur.Value as Borehole);
-                        if (cur.Selected)
-                        {
-                            warning_check(index, son, ref WARNINGSON);
-                            if (cmbSonic.Items.Count > 1)
-                            {
-                                chbSonic.Text = "Sonic (Default)";
-                                cmbSonic.SelectedIndex = 0;
-                                cmbSonic.Enabled = true;
-                            }
-                            else if (cmbSonic.Items.Count == 1)
-                            {
-                                chbSonic.Text = "Sonic";
-                                cmbSonic.SelectedIndex = 0;
-                                cmbSonic.Enabled = true;
-                            }
-                            else
-                            {
-                                chbSonic.Text = "Sonic";
-                                cmbSonic.Enabled = false;
 
-                            }
-                        }
+        //delete Borehole button
+        private void btn_DelBoreHole_Click(object sender, EventArgs e)
+        {
+            clearCombos();
+            var selItems = list_Boreholes.SelectedItems.ToList();
+            int index = 0; 
+            foreach (var cur in selItems)
+            {
+                list_Boreholes.Items.Remove(cur);
+                index = bholes.IndexOf(cur.Value as Borehole);
+                RemoveData(index);
+                bholes.RemoveAt(index);           
+            }
+
+        }
+
+        //remove wellogs using index of borehole
+        private void RemoveData(int index)
+        {
+            res.RemoveAt(index);
+            vitr.RemoveAt(index);
+            den.RemoveAt(index);
+            son.RemoveAt(index);
+            por.RemoveAt(index);
+        }
+
+
+        //add,check type welllogs
+        private List<WellLog> GetCorrectType(Borehole borehole,TemplateType type)
+        {
+            return borehole.LogCollection.WellLogs.Where(p => p.WellLogVersion.Template.TemplateType == type).Select(p => p).ToList();           
+        }
+
+        // update and collect welllogs in arguments collections(res,vitr,son,den,por);
+        private void AddData(Borehole borehole)
+        {    
+            var tmp_res = GetCorrectType(borehole,TemplateType.ResistivityDeep);
+            var tmp_vitr = GetCorrectType(borehole, TemplateType.VitriniteReflectance);
+            var tmp_son = GetCorrectType(borehole, TemplateType.Psonic);
+            var tmp_den = GetCorrectType(borehole, TemplateType.DensityCompensatedBulk);
+            var tmp_por = GetCorrectType(borehole, TemplateType.Porosity);
+
+            res.Add(new MyData(tmp_res, TemplateType.ResistivityDeep));
+            vitr.Add(new MyData(tmp_vitr, TemplateType.VitriniteReflectance));
+            son.Add(new MyData(tmp_son, TemplateType.Psonic));
+            den.Add(new MyData(tmp_den, TemplateType.Density));
+            por.Add(new MyData(tmp_por, TemplateType.Porosity));
+        }
+
+        //add data to list and show it
+        void AddListData(Borehole borehole, int index)
+        {
+            //adding data to wellog collections
+            AddData(borehole);
+
+            String resist_ = res[index].Log.Count == 0? "0" : res[index].Log.Count.ToString();
+            String vitrin_ = vitr[index].Log.Count == 0 ? "0" : vitr[index].Log.Count.ToString();
+            String den_ = den[index].Log.Count == 0 ? "0" : den[index].Log.Count.ToString();
+            String por_ = por[index].Log.Count == 0 ? "0" : por[index].Log.Count.ToString();
+            String son_ = son[index].Log.Count == 0 ? "0" : son[index].Log.Count.ToString();
+
+            IImageInfoFactory f = CoreSystem.GetService<IImageInfoFactory>(borehole);
+            var item = new ListBoxItem();
+            item.Text = string.Format("{0} (Resistivity: {1}; Vitrinite: {2},Density:{3},Porosity:{4},Sonic:{5})", borehole.Name, resist_, vitrin_, den_, por_, son_);
+
+            if (res[index].Log.Count == 0 || vitr[index].Log.Count == 0 || res[index].Log.Count > 1 || vitr[index].Log.Count > 1)
+                item.Image = PetrelImages.Warning;
+            else if (den[index].Log.Count != 0 || por[index].Log.Count != 0 || son[index].Log.Count != 0)
+                item.Image = f.GetImageInfo(borehole).TypeImage;
+            else
+                item.Image = PetrelImages.Warning;
+
+            item.Value = borehole;
+            list_Boreholes.Items.Add(item);
+        }
+
+        //adding boreholes to borehole list,collecting data(welllogs) for computing and show results in list
+        private void UpdateBoreholeList(Borehole borehole, int index)
+        {
+            if (!bholes.Contains(borehole))
+            {             
+                AddListData(borehole, index);
+                bholes.Add(borehole);
+            }
+        }
+
+
+        //drag drop for boreholes
+        private void drpBorehole_DragDrop(object sender, DragEventArgs e)
+        {
+            var rawData = e.Data.GetData(typeof(object));
+            switch (rawData.GetType().Name)
+            {
+                case "Borehole":
+                    {
+                        UpdateBoreholeList(rawData as Borehole, bholes.Count);
+                        break;
                     }
+                case "BoreholeCollection":
+                    {
+                        var boreholes = rawData as BoreholeCollection;
+                        foreach (var borehole in boreholes)
+                            UpdateBoreholeList(borehole, bholes.Count);
+                        break;
+                    }
+                default:
+                    PetrelLogger.ErrorBox("Object is not a Borehole!");
+                    break;
+            }
+        }
+
+
+        private void Set_MD_StartEnd(string type,bool stat)
+        {
+            switch(type)
+            {
+                case "Resistivity":
+                    MD_st_res.Enabled = stat;
+                    MD_en_res.Enabled = stat;                    
+                    MD_st_res.Value = 0;
+                    MD_en_res.Value = 0;
+                    break;
+                case "Sonic":
+                    MD_st_son.Enabled = stat;
+                    MD_en_son.Enabled = stat;
+                    MD_st_son.Value = 0;
+                    MD_en_son.Value = 0;
+                    break;
+                case "Density":
+                    MD_st_dens.Enabled = stat;
+                    MD_en_dens.Enabled = stat;
+                    MD_st_dens.Value = 0;
+                    MD_en_dens.Value = 0;
+                    break;
+                case "Porosity":
+                    MD_st_por.Enabled = stat;
+                    MD_en_por.Enabled = stat;
+                    MD_st_por.Value = 0;
+                    MD_en_por.Value = 0;
+                    break;
+            }
+        }
+
+
+        // check warning for resistivity,vitrinite
+        private void WarningCheck(ref List<MyData> data, ref Label t_warn, ref Slb.Ocean.Petrel.UI.Controls.ComboBox cmb, ref Label type_log, string type,int index)
+        {
+            if (data[index].Log.Count == 0)
+            {
+                t_warn.Image = Shale.Properties.Resources.IDB_BUTTON_MS_ERROR;
+                cmb.Enabled = false;
+               // MD_st_res.ResetText();      
+               // MD_en_res.ResetText();
+                Set_MD_StartEnd("Resistivity", false);
+            }
+            else
+            {
+                cmb.Enabled = true;
+
+                if (data[index].Select_index == -1)
+                {
+                    cmb.SelectedIndex = 0;
+                    data[index].Select_index = 0;
+                    Set_MD_StartEnd("Resistivity", true);
+                    type_log.Text = type;
+                    if (data[index].Log.Count > 1)
+                    {
+                        t_warn.Image = PetrelImages.Warning;
+                        type_log.Text += " (Default)";
+                    }
+                    else
+                    {
+                        t_warn.Image = Shale.Properties.Resources.IDB_BUTTON_APPLY;
+                    }
+
+                    data[index].Img = t_warn.Image;
+                }
+                else
+                {                 
+                    cmb.Enabled = true;
+                    cmb.SelectedIndex = data[index].Select_index;
+                    t_warn.Image = data[index].Img;
+                    if (type == "Resistivity Log")
+                    {
+                        Set_MD_StartEnd("Resistivity", true);
+                        MD_st_res.Value = data[index].Md_start;
+                        MD_en_res.Value = data[index].Md_end;
+                    }
+                }
+
+
+               
+            }       
+        }
+
+        // check warning for sonic,dens,por
+        private void WarningCheck(ref List<MyData> data, ref Label t_warn, ref Slb.Ocean.Petrel.UI.Controls.ComboBox cmb, ref CheckBox chb, string type, ref NumericUpDown start, ref NumericUpDown end, int index)
+        {
+            if (data[index].Log.Count == 0)
+            {
+                t_warn.Image = Shale.Properties.Resources.IDB_BUTTON_MS_ERROR;
+                cmb.Enabled = false;
+               // start.ResetText();
+                start.Enabled = false;
+               // end.ResetText();
+                end.Enabled = false;
+            }
+            else
+            {
+                cmb.Enabled = true;
+                start.Enabled = true;
+                end.Enabled = true;
+                if (data[index].Select_index == -1)
+                {
+                    cmb.SelectedIndex = 0;
+                    data[index].Select_index = 0;
+                    chb.Text = type;
+                    if (data[index].Log.Count > 1)
+                    {
+                        t_warn.Image = PetrelImages.Warning;
+                        chb.Text += " (Default)";
+                    }
+                    else
+                    {
+                        t_warn.Image = Shale.Properties.Resources.IDB_BUTTON_APPLY;
+                    }
+                    data[index].Img = t_warn.Image;
                 }
                 else
                 {
-                    foreach (var cur in sel_items)
+                    cmb.SelectedIndex = data[index].Select_index;
+                    t_warn.Image = data[index].Img;
+                    switch(type)
                     {
-                        if (cur.Selected)
-                        {
-                            //indexx.Add(bholes.IndexOf(cur.Value as Borehole));
-                            int index = bholes.IndexOf(cur.Value as Borehole);
-                            if (son[index] == null)
-                            {
-                                flag = true;
-                                list_Boreholes.Items[index].Image = PetrelImages.Cancel;
-                            }
-                            else if (son[index].Count > 1)
-                            {
-                                flag = true;
-                                list_Boreholes.Items[index].Image = PetrelImages.Warning;
-                            }
-                            else
-                            {
-                                flag = false;
-                                list_Boreholes.Items[index].Image = PetrelImages.Apply;
-                            }
-                        }
+                        case "Sonic":
+                            Set_MD_StartEnd("Sonic", true);
+                            MD_st_son.Value = data[index].Md_start;
+                            MD_en_son.Value = data[index].Md_end;
+
+                            break;
+                        case "Density":
+                            Set_MD_StartEnd("Density", true);
+                            MD_st_dens.Value = data[index].Md_start;
+                            MD_en_dens.Value = data[index].Md_end;
+                            break;
+                        case "Porosity":
+                            Set_MD_StartEnd("Porosity", true);
+                            MD_st_por.Value = data[index].Md_start;
+                            MD_en_por.Value = data[index].Md_end;
+                            break;
+                    }
+
+                }
+            }
+
+        }
+
+        private void LoadCmb(ref Slb.Ocean.Petrel.UI.Controls.ComboBox cmb,MyData data)
+        {  
+            foreach(var val in data.Log)
+            {
+                IImageInfoFactory f = CoreSystem.GetService<IImageInfoFactory>(val);
+                var cmbitem = new ComboBoxItem();
+                cmbitem.Text = string.Format("{0} ({1})", val.Name, data.Type);
+                cmbitem.Image = f.GetImageInfo(val).TypeImage;
+                cmbitem.Value = val;      
+                cmb.Items.Add(cmbitem);
+            }
+        }
+
+        private void CheckBoxEnabled(ref CheckBox chb,int count)
+        {
+            chb.Enabled = false;
+            if (cmbResistivity.Enabled && cmbVitrinite.Enabled && count >0)
+                    chb.Enabled = true;                   
+        }
+
+        private void SelItems_Change(object sender, EventArgs e)
+        {
+            //can process only one selected well
+            if (OneSelectedItem())
+            {
+                InitForm();
+                clearCombos();
+                foreach (var cur in list_Boreholes.SelectedItems)
+                {
+                    int index = bholes.IndexOf(cur.Value as Borehole);
+                    LoadCmb(ref cmbResistivity, res[index]);
+                    LoadCmb(ref cmbVitrinite, vitr[index]);
+                    LoadCmb(ref cmbSonic, son[index]);
+                    LoadCmb(ref cmbDensity, den[index]);
+                    LoadCmb(ref cmbPorosity, por[index]);
+
+                    WarningCheck(ref res,ref WARNINGRES, ref cmbResistivity, ref res_Label,"Resistivity Log",index);
+                    WarningCheck(ref vitr, ref WARNINGVITR, ref cmbVitrinite, ref vitr_Label, "Vitrinite Log",index);
+                    chbSonic.Checked = son[index].Check;
+            
+                }
+            }
+          
+            CheckBoxEnabled(ref chbSonic, cmbSonic.Items.Count);
+            CheckBoxEnabled(ref chbDensity, cmbDensity.Items.Count);
+            CheckBoxEnabled(ref chbPorosity, cmbPorosity.Items.Count);  
+        }
+
+        private void cmbResistivity_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (OneSelectedItem())
+                foreach (var cur in list_Boreholes.SelectedItems)
+                {
+                    int index = bholes.IndexOf(cur.Value as Borehole);
+                    res_Label.Text = "Resistivity Log";
+                    res[index].Select_index = cmbResistivity.SelectedIndex;
+                }           
+        }
+
+        private void MD_st_res_ValueChanged(object sender, EventArgs e)
+        {
+            if (OneSelectedItem())
+                foreach (var cur in list_Boreholes.SelectedItems)
+                {
+                    int index = bholes.IndexOf(cur.Value as Borehole);
+                    res[index].Md_start = (int)MD_st_res.Value;
+                }
+        }
+
+        private void MD_en_res_ValueChanged(object sender, EventArgs e)
+        {
+            if (OneSelectedItem())
+                foreach (var cur in list_Boreholes.SelectedItems)
+                {
+                    int index = bholes.IndexOf(cur.Value as Borehole);
+                    res[index].Md_end = (int)MD_en_res.Value;
+                }
+        }
+
+        private void cmbVitrinite_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (OneSelectedItem())
+                foreach (var cur in list_Boreholes.SelectedItems)
+                {
+                    int index = bholes.IndexOf(cur.Value as Borehole);
+                    vitr_Label.Text = "Vitrinite Log";
+                    vitr[index].Select_index = cmbVitrinite.SelectedIndex;
+                }    
+           
+        }
+
+        private void ClearSonicRaw()
+        {
+            chbSonic.Text = "Sonic";
+            cmbSonic.SelectedIndex = -1;
+            cmbSonic.Enabled = false;
+            MD_st_son.Enabled = false;
+            MD_en_son.Enabled = false;
+            MD_st_son.Value = 0;
+            MD_en_son.Value = 0;
+            WARNINGSON.Image = null;    
+        }
+        private void chbSonic_CheckStateChanged(object sender, EventArgs e)
+        {    
+            if (OneSelectedItem())
+            {
+                foreach (var cur in list_Boreholes.SelectedItems)
+                {
+                    int index = bholes.IndexOf(cur.Value as Borehole);
+                    if (chbSonic.Checked)
+                    {
+                        WarningCheck(ref son, ref WARNINGSON, ref cmbSonic, ref chbSonic, "Sonic", ref MD_st_son, ref MD_en_son,index);
+                        son[index].Check = true;
+                    }
+                    else
+                    {
+                        son[index].Check = false;
+                        son[index].Select_index = -1;
+                        son[index].Img = null;
+                        son[index].Md_start = 0;
+                        son[index].Md_end = 0;
+                        ClearSonicRaw();
                     }
                 }
             }
-            else {
-                chbSonic.Text = "Sonic";
-                WARNINGSON.ResetText();
-                //cmbSonic.Items.Clear();
-                cmbSonic.SelectedIndex = -1;
-                cmbSonic.Enabled = false;
-                chbSonic.Checked = false;
-            }
-            if (flag)
-                chbSonic.CheckState = CheckState.Indeterminate;
-           
-            
-            /*if (chbSonic.Checked && OneSelectedItem())
-            {
-                var sel_items = list_Boreholes.SelectedItems;
-                foreach (var cur in sel_items)
+                 
+        }
+
+
+        private void cmbSonic_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (OneSelectedItem())
+                foreach (var cur in list_Boreholes.SelectedItems)
                 {
                     int index = bholes.IndexOf(cur.Value as Borehole);
-                    if (cur.Selected && son[index].Count > 1)
-                        cmbSonic.Enabled = true;
+                    chbSonic.Text = "Sonic";
+                    son[index].Select_index = cmbSonic.SelectedIndex;
+                }                   
+        }
+
+        private void MD_st_son_ValueChanged(object sender, EventArgs e)
+        {
+            if (OneSelectedItem())
+                foreach (var cur in list_Boreholes.SelectedItems)
+                {
+                    int index = bholes.IndexOf(cur.Value as Borehole);
+                    son[index].Md_start = (int)MD_st_son.Value;
                 }
-            }
-            else
-                cmbSonic.Enabled = false;*/
+        }
+
+        private void MD_en_son_ValueChanged(object sender, EventArgs e)
+        {
+            if (OneSelectedItem())
+                foreach (var cur in list_Boreholes.SelectedItems)
+                {
+                    int index = bholes.IndexOf(cur.Value as Borehole);
+                    son[index].Md_end = (int)MD_en_son.Value;
+                }
+        }
+
+        private void ClearDensityRaw()
+        {
+            chbDensity.Text = "Density";
+            cmbDensity.SelectedIndex = -1;
+            cmbDensity.Enabled = false;
+            MD_st_dens.Enabled = false;
+            MD_en_dens.Enabled = false;
+            //MD_st_dens.ResetText();
+            //MD_en_dens.ResetText();
+            WARNINGDEN.Image = null;
         }
 
         private void chbDensity_CheckStateChanged(object sender, EventArgs e)
-        {
-            bool flag = false;
-            var sel_items = list_Boreholes.SelectedItems;
-            if (chbDensity.Checked)
+        {      
+            foreach (var cur in list_Boreholes.SelectedItems)
             {
-                if (OneSelectedItem())
+                int index = bholes.IndexOf(cur.Value as Borehole);
+                if (chbDensity.Checked && OneSelectedItem()) 
                 {
-                    foreach (var cur in sel_items)
-                    {
-                        int index = bholes.IndexOf(cur.Value as Borehole);
-                        if (cur.Selected)
-                        {
-                            warning_check(index, den, ref WARNINGDEN);
-                            if (cmbDensity.Items.Count > 1)
-                            {
-                                chbDensity.Text = "Density (Default)";
-                                cmbDensity.SelectedIndex = 0;
-                                cmbDensity.Enabled = true;
-                            }
-                            else if (cmbPorosity.Items.Count == 1)
-                            {
-                                chbDensity.Text = "Porosity";
-                                cmbDensity.SelectedIndex = 0;
-                                cmbDensity.Enabled = true;
-                            }
-                            else
-                            {
-                                chbDensity.Text = "Porosity";
-                                cmbDensity.Enabled = false;
-
-                            }
-                        }
-                    }
+                    WarningCheck(ref den, ref WARNINGDEN, ref cmbDensity, ref chbDensity, "Density", ref MD_st_dens, ref MD_en_dens, index);
+                    den[index].Check = true;
                 }
                 else
                 {
-                    foreach (var cur in sel_items)
-                    {
-                        if (cur.Selected)
-                        {
-                            //indexx.Add(bholes.IndexOf(cur.Value as Borehole));
-                            int index = bholes.IndexOf(cur.Value as Borehole);
-                            if (den[index] == null)
-                            {
-                                flag = true;
-                                list_Boreholes.Items[index].Image = PetrelImages.Cancel;
-                            }
-                            else if (den[index].Count > 1)
-                            {
-                                flag = true;
-                                list_Boreholes.Items[index].Image = PetrelImages.Warning;
-                            }
-                            else
-                            {
-                                flag = false;
-                                list_Boreholes.Items[index].Image = PetrelImages.Apply;
-                            }
-                        }
-                    }
+                    den[index].Check = false;
+                    den[index].Select_index = -1;
+                    den[index].Img = null;
+                    den[index].Md_start = 0;
+                    den[index].Md_end = 0;
+                    ClearDensityRaw();
                 }
+                
             }
-            else
-            {
-                chbDensity.Text = "Porosity";
-                WARNINGPOR.ResetText();
-                //cmbSonic.Items.Clear();
-                cmbDensity.SelectedIndex = -1;
-                cmbDensity.Enabled = false;
-                chbDensity.Checked = false;
-            }
-            if (flag)
-                chbDensity.CheckState = CheckState.Indeterminate;
         }
 
-        private void chbPorosity_CheckStateChanged(object sender, EventArgs e)
+        private void MD_st_dens_ValueChanged(object sender, EventArgs e)
         {
-            bool flag = false;
-            var sel_items = list_Boreholes.SelectedItems;
-            if (chbPorosity.Checked)
-            {
-                if (OneSelectedItem())
-                {
-                    foreach (var cur in sel_items)
-                    {
-                        int index = bholes.IndexOf(cur.Value as Borehole);
-                        if (cur.Selected)
-                        {
-                            warning_check(index, por, ref WARNINGPOR);
-                            if (cmbPorosity.Items.Count > 1)
-                            {
-                                chbPorosity.Text = "Porosity (Default)";
-                                cmbPorosity.SelectedIndex = 0;
-                                cmbPorosity.Enabled = true;
-                            }
-                            else if (cmbPorosity.Items.Count == 1)
-                            {
-                                chbPorosity.Text = "Porosity";
-                                cmbPorosity.SelectedIndex = 0;
-                                cmbPorosity.Enabled = true;
-                            }
-                            else
-                            {
-                                chbPorosity.Text = "Porosity";
-                                cmbPorosity.Enabled = false;
-
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (var cur in sel_items)
-                    {
-                        if (cur.Selected)
-                        {
-                            //indexx.Add(bholes.IndexOf(cur.Value as Borehole));
-                            int index = bholes.IndexOf(cur.Value as Borehole);
-                            if (por[index] == null)
-                            {
-                                flag = true;
-                                list_Boreholes.Items[index].Image = PetrelImages.Cancel;
-                            }
-                            else if (por[index].Count > 1)
-                            {
-                                flag = true;
-                                list_Boreholes.Items[index].Image = PetrelImages.Warning;
-                            }
-                            else
-                            {
-                                flag = false;
-                                list_Boreholes.Items[index].Image = PetrelImages.Apply;
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                chbPorosity.Text = "Porosity";
-                WARNINGPOR.ResetText();
-                //cmbSonic.Items.Clear();
-                cmbPorosity.SelectedIndex = -1;
-                cmbPorosity.Enabled = false;
-                chbPorosity.Checked = false;
-            }
-            if (flag)
-                chbPorosity.CheckState = CheckState.Indeterminate;
-
-
-            /*if (chbSonic.Checked && OneSelectedItem())
-            {
-                var sel_items = list_Boreholes.SelectedItems;
-                foreach (var cur in sel_items)
+            if (OneSelectedItem())
+                foreach (var cur in list_Boreholes.SelectedItems)
                 {
                     int index = bholes.IndexOf(cur.Value as Borehole);
-                    if (cur.Selected && son[index].Count > 1)
-                        cmbSonic.Enabled = true;
+                    den[index].Md_start = (int)MD_st_dens.Value;
                 }
-            }
-            else
-                cmbSonic.Enabled = false;*/
-
         }
 
+        private void MD_en_dens_ValueChanged(object sender, EventArgs e)
+        {
+            if (OneSelectedItem())
+                foreach (var cur in list_Boreholes.SelectedItems)
+                {
+                    int index = bholes.IndexOf(cur.Value as Borehole);
+                    den[index].Md_end = (int)MD_en_dens.Value;
+                }
+        }
+        private void ClearPorosityRaw()
+        {
+            chbPorosity.Text = "Porosity";
+            cmbPorosity.SelectedIndex = -1;
+            cmbPorosity.Enabled = false;
+            MD_st_por.Enabled = false;
+            MD_en_por.Enabled = false;
+           // MD_st_por.ResetText();
+           // MD_en_por.ResetText();
+            WARNINGPOR.Image = null;
+        }
+        private void chbPorosity_CheckStateChanged(object sender, EventArgs e)
+        {
+            foreach (var cur in list_Boreholes.SelectedItems)
+            {
+                int index = bholes.IndexOf(cur.Value as Borehole);
+                if (chbPorosity.Checked && OneSelectedItem())
+                {
+                    WarningCheck(ref por, ref WARNINGPOR, ref cmbPorosity, ref chbPorosity, "Porosity", ref MD_st_por, ref MD_en_por, index);
+                    por[index].Check = true;
+                }
+                else
+                {
+                    por[index].Check = false;
+                    por[index].Select_index = -1;
+                    por[index].Img = null;
+                    por[index].Md_start = 0;
+                    por[index].Md_end = 0;
+                    ClearPorosityRaw();
+                }
+
+            }
+        }
+
+        private void MD_st_por_ValueChanged(object sender, EventArgs e)
+        {
+            if (OneSelectedItem())
+                foreach (var cur in list_Boreholes.SelectedItems)
+                {
+                    int index = bholes.IndexOf(cur.Value as Borehole);
+                    por[index].Md_start = (int)MD_st_por.Value;
+                }
+        }
+
+        private void MD_en_por_ValueChanged(object sender, EventArgs e)
+        {
+            if (OneSelectedItem())
+                foreach (var cur in list_Boreholes.SelectedItems)
+                {
+                    int index = bholes.IndexOf(cur.Value as Borehole);
+                    por[index].Md_end = (int)MD_en_por.Value;
+                }
+        }
+
+        
+
     }
+            
 }
