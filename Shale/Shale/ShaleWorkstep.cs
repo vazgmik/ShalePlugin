@@ -280,12 +280,12 @@ namespace Shale
                 return template;
             }
 
-            public float GetMedian(List<WellLogSample> samples, string name)
+            public float GetMedian(List<WellLogSample> samples, int startRngVal, int endRngVal)
             {
                 List<float> _base = new List<float>();
                 foreach (WellLogSample sample in samples)
                 {
-                    if (sample.MD > arguments.md_range[name][0] && sample.MD < arguments.md_range[name][1])
+                    if (sample.MD > startRngVal && sample.MD < endRngVal)
                     {
                         _base.Add(sample.Value);
                     }
@@ -297,18 +297,18 @@ namespace Shale
             public void CalculateTOC(MyData data, List<WellLogSample> res_samples, int index, double k, string name1, string name2, Borehole bhole)
             {
                 // function to calculate TOC
-                if (data != null)
+                if (data.Log.Count != 0)
                 {
 
-                    System.IO.StreamWriter file = new System.IO.StreamWriter("d:\\test.txt");
+                    //System.IO.StreamWriter file = new System.IO.StreamWriter("d:\\test.txt");
                     List<WellLogSample>tmpsamples = new List<WellLogSample>();
-                    List<WellLogSample> type_samples = new List<WellLogSample>(); //data.Log.Samples.ToList();
+                    List<WellLogSample> type_samples = data.Log[data.Select_index].Samples.ToList();
                     
-                    float max_resval = GetMedian(res_samples,"res");//20;
-                    float max_dtcval = GetMedian(type_samples, "son");//65;
+                    float max_resval = GetMedian(res_samples, arguments.List_res[index].Md_start, arguments.List_res[index].Md_end);//20;
+                    float max_dtcval = GetMedian(type_samples, data.Md_start,data.Md_end);//65;
 
                     List<WellLogSample> tocs_samples = new List<WellLogSample>();
-                    int size = 0;//Math.Min(arguments.List_res[index].Log.SampleCount, data.Log.SampleCount);
+                    int size = Math.Min(arguments.List_res[index].Log[arguments.List_res[index].Select_index].SampleCount, data.Log[data.Select_index].SampleCount);
                     double power = 0.297 - 0.1688 * 13;//LOM  надо подставить здесь 13
                     for (int i = 0; i < size; ++i)
                     {
@@ -322,21 +322,35 @@ namespace Shale
                             float fl_typetoc = fl_typelog * (float)Math.Pow(10, power);
                             tocs_samples.Add(new WellLogSample(res_samples[i].MD, fl_typetoc));
                            
-                            file.WriteLine(fl_typetoc);
+                          //  file.WriteLine(fl_typetoc);
 
                         }
                     }
                     
-                        Template t = CreateCustomFractionTemplate();
-                        var typeLogR = CreateWellLog(bhole, name1, t, tmpsamples);
-                        var typeTOC = CreateWellLog(bhole, name2, t, tocs_samples);
-                        file.Close();
+                    Template t = CreateCustomFractionTemplate();
+                    var typeLogR = CreateWellLog(bhole, name1, t, tmpsamples);
+                    var typeTOC = CreateWellLog(bhole, name2, t, tocs_samples);
+                     //   file.Close();
                       
                     
                 }
 
             }
 
+
+            //Well space - Geomechanical: Poisson ratio, Young Modulus, Average Brittleness estimations
+            public void BritleAnalysis()
+            {
+                /*Poissson_Ratio=0.5*(DTS*DTS-2*DT*DT)/(DTS*DTS-DT*DT)
+                    young_modul=2*13475*RHOB_GC*(1+Possson_Ratio)/(DTS*DTS)
+                    V_br=(Possson_Ratio-0.15)/(0.15) Possson_Ratio  ?max and ?min are the maximum and minimum values 
+                    E_br=(young_modul-0.7)/7.3 young_modul Emin and Emax
+                    BA= 100*(E_br+V_br)/2
+
+                    DTS - this is S-sonic vs
+                    DT and DTC- these are P-sonic vp
+                    RHOB_GC - density */
+            }
             public void UpdateDrawCorrelationData2D(WellLog log1, WellLog log2, CorrelationData2D cor,String name)
             {
                 //Draw Crossplot function 
@@ -371,7 +385,7 @@ namespace Shale
                 /*Шаг 1:Calculation of LogR of all Resistivity logs 
                         Исходные данные:каротажная кривая сопротивления (LLD) 
                         Результат: логарифм кривой сопротивления                 */
-                if (arguments.Boreholes.Count == 0 || arguments.List_res == null || arguments.List_vitr == null) 
+                if (arguments.Boreholes.Count == 0 || arguments.List_res.Count == 0 || arguments.List_vitr.Count == 0) 
                     return;
 
                 log_counter = 0;
@@ -379,13 +393,13 @@ namespace Shale
                 foreach (Borehole bhole in arguments.Boreholes)
                 {
                     //check if no resistivity data or vitrinite when continue
-                    if (arguments.List_res[index] == null || arguments.List_vitr[index] == null)
+                    if (arguments.List_res[index].Log.Count == 0 || arguments.List_vitr[index].Log.Count == 0)
                     {
                         index++;
                         continue;
                     }
                     //resistivity samples
-                    var samples = arguments.List_res[index].Log[index].Samples;
+                    var samples = arguments.List_res[index].Log[arguments.List_res[index].Select_index].Samples;
                     
                     //create list res_samples,contains samples of resistivity log 
                     List<WellLogSample> res_samples = samples.ToList();
@@ -400,10 +414,11 @@ namespace Shale
                             tmpsamples.Add(new WellLogSample(sample.MD, fl_log));
                         }
                     }
-                   
-                    if (arguments.List_son[index] != null)
+
+                    // if sonic checked then we can draw plot LogR vs Sonic
+                    if (arguments.List_son[index].Check && arguments.List_son[index].Log.Count != 0)
                     {
-                        var LogR = CreateWellLog(bhole, "LogR", arguments.List_res[index].Log[index].WellLogVersion.Template, tmpsamples);
+                        var LogR = CreateWellLog(bhole, "LogR", arguments.List_res[index].Log[arguments.List_res[index].Select_index].WellLogVersion.Template, tmpsamples);
 
                         using (ITransaction trans = DataManager.NewTransaction())
                         {
@@ -422,19 +437,30 @@ namespace Shale
                             trans.Lock(PetrelProject.PrimaryProject);
                             Collection col = PetrelProject.PrimaryProject.CreateCollection("Correlation collection");
                             CorrelationData2D cor = col.CreateCorrelationData2D("Cross plot");
-                        
-                            UpdateDrawCorrelationData2D(LogR, arguments.List_son[index].Log[index], cor, bhole.Name + ":LogR vs Sonic");
+
+                            UpdateDrawCorrelationData2D(LogR, arguments.List_son[index].Log[arguments.List_son[index].Select_index], cor, bhole.Name + ":LogR vs Sonic");
                             trans.Commit();
                         }
                     }
 
-                    //create SLogR and TOCs
-                    CalculateTOC(arguments.List_son[index],res_samples, index, 0.02, "SlogR", "TOCs", bhole);
-                    //create DlogR and TOCd
-                //    CalculateTOC(arguments.List_den[index], ref tmpsamples, res_samples, index, -2.5, "DlogR", "TOCd", bhole);
-                    //create DlogR and TOCd
-                //    CalculateTOC(arguments.List_por[index], ref tmpsamples, res_samples, index, 4.0, "NlogR", "TOCn", bhole);
-                       
+
+                    if (arguments.List_son[index].Check &&  arguments.List_son[index].Select_index >=0 && arguments.List_son[index].Log.Count >0)
+                    {
+                        //create SLogR and TOCs
+                        CalculateTOC(arguments.List_son[index], res_samples, index, 0.02, "SlogR", "TOCs", bhole);
+                    }
+                    if (arguments.List_den[index].Check &&  arguments.List_den[index].Select_index >=0 && arguments.List_den[index].Log.Count >0 )
+                    {
+                        //create DlogR and TOCd
+                        CalculateTOC(arguments.List_den[index], res_samples, index, -2.5, "DlogR", "TOCd", bhole);
+                    }
+
+                    if (arguments.List_por[index].Check && arguments.List_por[index].Select_index >= 0 && arguments.List_por[index].Log.Count > 0)
+                    {
+                        //create DlogR and TOCd
+                        CalculateTOC(arguments.List_por[index],res_samples, index, 4.0, "NlogR", "TOCn", bhole);
+                    }
+
                     index++;
                 }
                 arguments.Log_count = log_counter;
