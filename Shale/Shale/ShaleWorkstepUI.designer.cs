@@ -75,6 +75,7 @@ namespace Shale
             this.tableLayoutPanel10 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel16 = new System.Windows.Forms.TableLayoutPanel();
             this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             this.tableLayoutPanel11 = new System.Windows.Forms.TableLayoutPanel();
             this.res_Label = new System.Windows.Forms.Label();
             this.WARNINGRES = new System.Windows.Forms.Label();
@@ -84,8 +85,8 @@ namespace Shale
             this.WARNINGVITR = new System.Windows.Forms.Label();
             this.cmbVitrinite = new Slb.Ocean.Petrel.UI.Controls.ComboBox();
             this.toolTipHotspot1 = new Slb.Ocean.Petrel.UI.Controls.ToolTipHotspot(this.components);
-            this.label11 = new System.Windows.Forms.Label();
             this.toolTipHotspot2 = new Slb.Ocean.Petrel.UI.Controls.ToolTipHotspot(this.components);
+            this.tableLayoutPanel28 = new System.Windows.Forms.TableLayoutPanel();
             this.MD_st_res = new System.Windows.Forms.NumericUpDown();
             this.MD_en_res = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
@@ -100,9 +101,9 @@ namespace Shale
             this.label5 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.comboBox1 = new Slb.Ocean.Petrel.UI.Controls.ComboBox();
-            this.comboBox2 = new Slb.Ocean.Petrel.UI.Controls.ComboBox();
-            this.comboBox3 = new Slb.Ocean.Petrel.UI.Controls.ComboBox();
+            this.cmbBritleAnlSsonic = new Slb.Ocean.Petrel.UI.Controls.ComboBox();
+            this.cmbBritleAnlPsonic = new Slb.Ocean.Petrel.UI.Controls.ComboBox();
+            this.cmbBritleAnlDensity = new Slb.Ocean.Petrel.UI.Controls.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
             this.tabControl1 = new Slb.Ocean.Petrel.UI.Controls.TabControl();
             this.tabPage1 = new Slb.Ocean.Petrel.UI.Controls.TabPage();
@@ -158,6 +159,7 @@ namespace Shale
             this.tableLayoutPanel16.SuspendLayout();
             this.tableLayoutPanel11.SuspendLayout();
             this.tableLayoutPanel12.SuspendLayout();
+            this.tableLayoutPanel28.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MD_st_res)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MD_en_res)).BeginInit();
             this.tableLayoutPanel8.SuspendLayout();
@@ -313,7 +315,7 @@ namespace Shale
             this.cmbDensity.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmbDensity.Location = new System.Drawing.Point(3, 33);
             this.cmbDensity.Name = "cmbDensity";
-            this.cmbDensity.Size = new System.Drawing.Size(155, 19);
+            this.cmbDensity.Size = new System.Drawing.Size(155, 22);
             this.cmbDensity.TabIndex = 20;
             // 
             // cmbPorosity
@@ -322,7 +324,7 @@ namespace Shale
             this.cmbPorosity.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmbPorosity.Location = new System.Drawing.Point(3, 63);
             this.cmbPorosity.Name = "cmbPorosity";
-            this.cmbPorosity.Size = new System.Drawing.Size(155, 19);
+            this.cmbPorosity.Size = new System.Drawing.Size(155, 22);
             this.cmbPorosity.TabIndex = 22;
             // 
             // cmbSonic
@@ -331,7 +333,7 @@ namespace Shale
             this.cmbSonic.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmbSonic.Location = new System.Drawing.Point(3, 3);
             this.cmbSonic.Name = "cmbSonic";
-            this.cmbSonic.Size = new System.Drawing.Size(155, 19);
+            this.cmbSonic.Size = new System.Drawing.Size(155, 22);
             this.cmbSonic.TabIndex = 21;
             this.cmbSonic.SelectedIndexChanged += new System.EventHandler(this.cmbSonic_SelectedIndexChanged);
             // 
@@ -714,10 +716,8 @@ namespace Shale
             this.tableLayoutPanel10.Controls.Add(this.tableLayoutPanel12, 0, 2);
             this.tableLayoutPanel10.Controls.Add(this.cmbVitrinite, 0, 3);
             this.tableLayoutPanel10.Controls.Add(this.toolTipHotspot1, 1, 0);
-            this.tableLayoutPanel10.Controls.Add(this.label11, 2, 2);
             this.tableLayoutPanel10.Controls.Add(this.toolTipHotspot2, 3, 0);
-            this.tableLayoutPanel10.Controls.Add(this.MD_st_res, 2, 1);
-            this.tableLayoutPanel10.Controls.Add(this.MD_en_res, 2, 3);
+            this.tableLayoutPanel10.Controls.Add(this.tableLayoutPanel28, 2, 1);
             this.tableLayoutPanel10.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel10.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.tableLayoutPanel10.Location = new System.Drawing.Point(3, 148);
@@ -732,14 +732,16 @@ namespace Shale
             // 
             // tableLayoutPanel16
             // 
-            this.tableLayoutPanel16.ColumnCount = 1;
+            this.tableLayoutPanel16.ColumnCount = 2;
+            this.tableLayoutPanel16.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel16.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel16.Controls.Add(this.label10, 0, 0);
+            this.tableLayoutPanel16.Controls.Add(this.label11, 1, 0);
             this.tableLayoutPanel16.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel16.Location = new System.Drawing.Point(367, 3);
             this.tableLayoutPanel16.Name = "tableLayoutPanel16";
             this.tableLayoutPanel16.RowCount = 1;
-            this.tableLayoutPanel16.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel16.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel16.Size = new System.Drawing.Size(332, 25);
             this.tableLayoutPanel16.TabIndex = 9;
             // 
@@ -752,6 +754,16 @@ namespace Shale
             this.label10.Size = new System.Drawing.Size(58, 13);
             this.label10.TabIndex = 10;
             this.label10.Text = "Start value";
+            // 
+            // label11
+            // 
+            this.label11.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(169, 6);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(55, 13);
+            this.label11.TabIndex = 11;
+            this.label11.Text = "End value";
             // 
             // tableLayoutPanel11
             // 
@@ -796,7 +808,7 @@ namespace Shale
             this.cmbResistivity.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmbResistivity.Location = new System.Drawing.Point(3, 34);
             this.cmbResistivity.Name = "cmbResistivity";
-            this.cmbResistivity.Size = new System.Drawing.Size(332, 19);
+            this.cmbResistivity.Size = new System.Drawing.Size(332, 22);
             this.cmbResistivity.TabIndex = 5;
             this.cmbResistivity.SelectedIndexChanged += new System.EventHandler(this.cmbResistivity_SelectedIndexChanged);
             // 
@@ -842,7 +854,7 @@ namespace Shale
             this.cmbVitrinite.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmbVitrinite.Location = new System.Drawing.Point(3, 96);
             this.cmbVitrinite.Name = "cmbVitrinite";
-            this.cmbVitrinite.Size = new System.Drawing.Size(332, 19);
+            this.cmbVitrinite.Size = new System.Drawing.Size(332, 22);
             this.cmbVitrinite.TabIndex = 6;
             this.cmbVitrinite.SelectedIndexChanged += new System.EventHandler(this.cmbVitrinite_SelectedIndexChanged);
             // 
@@ -864,16 +876,6 @@ namespace Shale
             toolTipItem3});
             this.toolTipManager1.SetToolTip(this.toolTipHotspot1, toolTipInfo1);
             // 
-            // label11
-            // 
-            this.label11.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(367, 71);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(55, 13);
-            this.label11.TabIndex = 11;
-            this.label11.Text = "End value";
-            // 
             // toolTipHotspot2
             // 
             this.toolTipHotspot2.Location = new System.Drawing.Point(705, 3);
@@ -885,26 +887,39 @@ namespace Shale
             toolTipItem4});
             this.toolTipManager1.SetToolTip(this.toolTipHotspot2, toolTipInfo2);
             // 
+            // tableLayoutPanel28
+            // 
+            this.tableLayoutPanel28.ColumnCount = 2;
+            this.tableLayoutPanel28.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel28.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel28.Controls.Add(this.MD_st_res, 0, 0);
+            this.tableLayoutPanel28.Controls.Add(this.MD_en_res, 1, 0);
+            this.tableLayoutPanel28.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel28.Location = new System.Drawing.Point(367, 34);
+            this.tableLayoutPanel28.Name = "tableLayoutPanel28";
+            this.tableLayoutPanel28.RowCount = 1;
+            this.tableLayoutPanel28.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel28.Size = new System.Drawing.Size(332, 25);
+            this.tableLayoutPanel28.TabIndex = 17;
+            // 
             // MD_st_res
             // 
-            this.MD_st_res.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MD_st_res.Enabled = false;
-            this.MD_st_res.Location = new System.Drawing.Point(367, 34);
+            this.MD_st_res.Location = new System.Drawing.Point(3, 3);
             this.MD_st_res.Maximum = new decimal(new int[] {
             10000,
             0,
             0,
             0});
             this.MD_st_res.Name = "MD_st_res";
-            this.MD_st_res.Size = new System.Drawing.Size(332, 20);
+            this.MD_st_res.Size = new System.Drawing.Size(160, 20);
             this.MD_st_res.TabIndex = 15;
             this.MD_st_res.ValueChanged += new System.EventHandler(this.MD_st_res_ValueChanged);
             // 
             // MD_en_res
             // 
-            this.MD_en_res.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MD_en_res.Enabled = false;
-            this.MD_en_res.Location = new System.Drawing.Point(367, 96);
+            this.MD_en_res.Location = new System.Drawing.Point(169, 3);
             this.MD_en_res.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -916,7 +931,7 @@ namespace Shale
             0,
             -2147483648});
             this.MD_en_res.Name = "MD_en_res";
-            this.MD_en_res.Size = new System.Drawing.Size(332, 20);
+            this.MD_en_res.Size = new System.Drawing.Size(160, 20);
             this.MD_en_res.TabIndex = 16;
             this.MD_en_res.ValueChanged += new System.EventHandler(this.MD_en_res_ValueChanged);
             // 
@@ -1002,7 +1017,7 @@ namespace Shale
             this.tableLayoutPanel17.Controls.Add(this.tableLayoutPanel18, 0, 1);
             this.tableLayoutPanel17.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel17.Location = new System.Drawing.Point(2, 462);
-            this.tableLayoutPanel17.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tableLayoutPanel17.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel17.Name = "tableLayoutPanel17";
             this.tableLayoutPanel17.RowCount = 2;
             this.tableLayoutPanel17.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 18.53658F));
@@ -1029,11 +1044,11 @@ namespace Shale
             this.tableLayoutPanel18.Controls.Add(this.label5, 0, 0);
             this.tableLayoutPanel18.Controls.Add(this.label12, 0, 1);
             this.tableLayoutPanel18.Controls.Add(this.label13, 0, 2);
-            this.tableLayoutPanel18.Controls.Add(this.comboBox1, 1, 0);
-            this.tableLayoutPanel18.Controls.Add(this.comboBox2, 1, 1);
-            this.tableLayoutPanel18.Controls.Add(this.comboBox3, 1, 2);
+            this.tableLayoutPanel18.Controls.Add(this.cmbBritleAnlSsonic, 1, 0);
+            this.tableLayoutPanel18.Controls.Add(this.cmbBritleAnlPsonic, 1, 1);
+            this.tableLayoutPanel18.Controls.Add(this.cmbBritleAnlDensity, 1, 2);
             this.tableLayoutPanel18.Location = new System.Drawing.Point(2, 26);
-            this.tableLayoutPanel18.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tableLayoutPanel18.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel18.Name = "tableLayoutPanel18";
             this.tableLayoutPanel18.RowCount = 3;
             this.tableLayoutPanel18.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
@@ -1072,35 +1087,35 @@ namespace Shale
             this.label13.TabIndex = 2;
             this.label13.Text = "Density";
             // 
-            // comboBox1
+            // cmbBritleAnlSsonic
             // 
-            this.comboBox1.Location = new System.Drawing.Point(111, 2);
-            this.comboBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(216, 19);
-            this.comboBox1.TabIndex = 3;
+            this.cmbBritleAnlSsonic.Location = new System.Drawing.Point(111, 2);
+            this.cmbBritleAnlSsonic.Margin = new System.Windows.Forms.Padding(2);
+            this.cmbBritleAnlSsonic.Name = "cmbBritleAnlSsonic";
+            this.cmbBritleAnlSsonic.Size = new System.Drawing.Size(216, 22);
+            this.cmbBritleAnlSsonic.TabIndex = 3;
             // 
-            // comboBox2
+            // cmbBritleAnlPsonic
             // 
-            this.comboBox2.Location = new System.Drawing.Point(111, 36);
-            this.comboBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(216, 19);
-            this.comboBox2.TabIndex = 4;
+            this.cmbBritleAnlPsonic.Location = new System.Drawing.Point(111, 36);
+            this.cmbBritleAnlPsonic.Margin = new System.Windows.Forms.Padding(2);
+            this.cmbBritleAnlPsonic.Name = "cmbBritleAnlPsonic";
+            this.cmbBritleAnlPsonic.Size = new System.Drawing.Size(216, 22);
+            this.cmbBritleAnlPsonic.TabIndex = 4;
             // 
-            // comboBox3
+            // cmbBritleAnlDensity
             // 
-            this.comboBox3.Location = new System.Drawing.Point(111, 70);
-            this.comboBox3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(216, 19);
-            this.comboBox3.TabIndex = 5;
+            this.cmbBritleAnlDensity.Location = new System.Drawing.Point(111, 70);
+            this.cmbBritleAnlDensity.Margin = new System.Windows.Forms.Padding(2);
+            this.cmbBritleAnlDensity.Name = "cmbBritleAnlDensity";
+            this.cmbBritleAnlDensity.Size = new System.Drawing.Size(216, 22);
+            this.cmbBritleAnlDensity.TabIndex = 5;
             // 
             // button1
             // 
             this.button1.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.button1.Location = new System.Drawing.Point(656, 602);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(76, 20);
             this.button1.TabIndex = 20;
@@ -1125,7 +1140,7 @@ namespace Shale
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.tableLayoutPanel19);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Size = new System.Drawing.Size(734, 629);
             this.tabPage1.Text = "Shale oil and gas resource";
@@ -1138,7 +1153,7 @@ namespace Shale
             this.tableLayoutPanel19.Controls.Add(this.tableLayoutPanel20, 0, 1);
             this.tableLayoutPanel19.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel19.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel19.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tableLayoutPanel19.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel19.Name = "tableLayoutPanel19";
             this.tableLayoutPanel19.RowCount = 3;
             this.tableLayoutPanel19.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 4.358974F));
@@ -1168,7 +1183,7 @@ namespace Shale
             this.tableLayoutPanel20.Controls.Add(this.label16, 1, 0);
             this.tableLayoutPanel20.Controls.Add(this.dataGridView1, 1, 1);
             this.tableLayoutPanel20.Location = new System.Drawing.Point(2, 29);
-            this.tableLayoutPanel20.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tableLayoutPanel20.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel20.Name = "tableLayoutPanel20";
             this.tableLayoutPanel20.RowCount = 2;
             this.tableLayoutPanel20.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.88136F));
@@ -1192,7 +1207,7 @@ namespace Shale
             this.tableLayoutPanel21.Controls.Add(this.tableLayoutPanel23, 0, 1);
             this.tableLayoutPanel21.Controls.Add(this.tableLayoutPanel22, 0, 0);
             this.tableLayoutPanel21.Location = new System.Drawing.Point(2, 32);
-            this.tableLayoutPanel21.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tableLayoutPanel21.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel21.Name = "tableLayoutPanel21";
             this.tableLayoutPanel21.RowCount = 6;
             this.tableLayoutPanel21.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
@@ -1212,7 +1227,7 @@ namespace Shale
             this.tableLayoutPanel27.Controls.Add(this.label22, 0, 0);
             this.tableLayoutPanel27.Controls.Add(this.numericUpDown6, 1, 0);
             this.tableLayoutPanel27.Location = new System.Drawing.Point(2, 167);
-            this.tableLayoutPanel27.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tableLayoutPanel27.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel27.Name = "tableLayoutPanel27";
             this.tableLayoutPanel27.RowCount = 1;
             this.tableLayoutPanel27.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -1233,7 +1248,7 @@ namespace Shale
             // numericUpDown6
             // 
             this.numericUpDown6.Location = new System.Drawing.Point(69, 2);
-            this.numericUpDown6.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.numericUpDown6.Margin = new System.Windows.Forms.Padding(2);
             this.numericUpDown6.Name = "numericUpDown6";
             this.numericUpDown6.Size = new System.Drawing.Size(176, 20);
             this.numericUpDown6.TabIndex = 1;
@@ -1246,7 +1261,7 @@ namespace Shale
             this.tableLayoutPanel26.Controls.Add(this.label21, 0, 0);
             this.tableLayoutPanel26.Controls.Add(this.numericUpDown5, 1, 0);
             this.tableLayoutPanel26.Location = new System.Drawing.Point(2, 134);
-            this.tableLayoutPanel26.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tableLayoutPanel26.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel26.Name = "tableLayoutPanel26";
             this.tableLayoutPanel26.RowCount = 1;
             this.tableLayoutPanel26.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -1267,7 +1282,7 @@ namespace Shale
             // numericUpDown5
             // 
             this.numericUpDown5.Location = new System.Drawing.Point(70, 2);
-            this.numericUpDown5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.numericUpDown5.Margin = new System.Windows.Forms.Padding(2);
             this.numericUpDown5.Name = "numericUpDown5";
             this.numericUpDown5.Size = new System.Drawing.Size(175, 20);
             this.numericUpDown5.TabIndex = 1;
@@ -1280,7 +1295,7 @@ namespace Shale
             this.tableLayoutPanel25.Controls.Add(this.label20, 0, 0);
             this.tableLayoutPanel25.Controls.Add(this.numericUpDown4, 1, 0);
             this.tableLayoutPanel25.Location = new System.Drawing.Point(2, 101);
-            this.tableLayoutPanel25.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tableLayoutPanel25.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel25.Name = "tableLayoutPanel25";
             this.tableLayoutPanel25.RowCount = 1;
             this.tableLayoutPanel25.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -1301,7 +1316,7 @@ namespace Shale
             // numericUpDown4
             // 
             this.numericUpDown4.Location = new System.Drawing.Point(70, 2);
-            this.numericUpDown4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.numericUpDown4.Margin = new System.Windows.Forms.Padding(2);
             this.numericUpDown4.Name = "numericUpDown4";
             this.numericUpDown4.Size = new System.Drawing.Size(175, 20);
             this.numericUpDown4.TabIndex = 1;
@@ -1314,7 +1329,7 @@ namespace Shale
             this.tableLayoutPanel24.Controls.Add(this.label19, 0, 0);
             this.tableLayoutPanel24.Controls.Add(this.numericUpDown3, 1, 0);
             this.tableLayoutPanel24.Location = new System.Drawing.Point(2, 68);
-            this.tableLayoutPanel24.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tableLayoutPanel24.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel24.Name = "tableLayoutPanel24";
             this.tableLayoutPanel24.RowCount = 1;
             this.tableLayoutPanel24.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -1335,7 +1350,7 @@ namespace Shale
             // numericUpDown3
             // 
             this.numericUpDown3.Location = new System.Drawing.Point(71, 2);
-            this.numericUpDown3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.numericUpDown3.Margin = new System.Windows.Forms.Padding(2);
             this.numericUpDown3.Name = "numericUpDown3";
             this.numericUpDown3.Size = new System.Drawing.Size(174, 20);
             this.numericUpDown3.TabIndex = 1;
@@ -1348,7 +1363,7 @@ namespace Shale
             this.tableLayoutPanel23.Controls.Add(this.label18, 0, 0);
             this.tableLayoutPanel23.Controls.Add(this.numericUpDown2, 1, 0);
             this.tableLayoutPanel23.Location = new System.Drawing.Point(2, 35);
-            this.tableLayoutPanel23.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tableLayoutPanel23.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel23.Name = "tableLayoutPanel23";
             this.tableLayoutPanel23.RowCount = 1;
             this.tableLayoutPanel23.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -1369,7 +1384,7 @@ namespace Shale
             // numericUpDown2
             // 
             this.numericUpDown2.Location = new System.Drawing.Point(71, 2);
-            this.numericUpDown2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.numericUpDown2.Margin = new System.Windows.Forms.Padding(2);
             this.numericUpDown2.Name = "numericUpDown2";
             this.numericUpDown2.Size = new System.Drawing.Size(173, 20);
             this.numericUpDown2.TabIndex = 1;
@@ -1382,7 +1397,7 @@ namespace Shale
             this.tableLayoutPanel22.Controls.Add(this.label17, 0, 0);
             this.tableLayoutPanel22.Controls.Add(this.numericUpDown1, 1, 0);
             this.tableLayoutPanel22.Location = new System.Drawing.Point(2, 2);
-            this.tableLayoutPanel22.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tableLayoutPanel22.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel22.Name = "tableLayoutPanel22";
             this.tableLayoutPanel22.RowCount = 1;
             this.tableLayoutPanel22.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -1403,7 +1418,7 @@ namespace Shale
             // numericUpDown1
             // 
             this.numericUpDown1.Location = new System.Drawing.Point(73, 2);
-            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(2);
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(175, 20);
             this.numericUpDown1.TabIndex = 1;
@@ -1439,7 +1454,7 @@ namespace Shale
             this.Column4,
             this.Column5});
             this.dataGridView1.Location = new System.Drawing.Point(271, 32);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.Size = new System.Drawing.Size(407, 204);
@@ -1501,13 +1516,13 @@ namespace Shale
             this.tableLayoutPanel15.ResumeLayout(false);
             this.tableLayoutPanel15.PerformLayout();
             this.tableLayoutPanel10.ResumeLayout(false);
-            this.tableLayoutPanel10.PerformLayout();
             this.tableLayoutPanel16.ResumeLayout(false);
             this.tableLayoutPanel16.PerformLayout();
             this.tableLayoutPanel11.ResumeLayout(false);
             this.tableLayoutPanel11.PerformLayout();
             this.tableLayoutPanel12.ResumeLayout(false);
             this.tableLayoutPanel12.PerformLayout();
+            this.tableLayoutPanel28.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.MD_st_res)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MD_en_res)).EndInit();
             this.tableLayoutPanel8.ResumeLayout(false);
@@ -1616,9 +1631,9 @@ namespace Shale
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
-        private Slb.Ocean.Petrel.UI.Controls.ComboBox comboBox1;
-        private Slb.Ocean.Petrel.UI.Controls.ComboBox comboBox2;
-        private Slb.Ocean.Petrel.UI.Controls.ComboBox comboBox3;
+        private Slb.Ocean.Petrel.UI.Controls.ComboBox cmbBritleAnlSsonic;
+        private Slb.Ocean.Petrel.UI.Controls.ComboBox cmbBritleAnlPsonic;
+        private Slb.Ocean.Petrel.UI.Controls.ComboBox cmbBritleAnlDensity;
         private System.Windows.Forms.Button button1;
         private Slb.Ocean.Petrel.UI.Controls.TabPage tabPage1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel19;
@@ -1651,5 +1666,6 @@ namespace Shale
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel28;
     }
 }

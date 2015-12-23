@@ -82,3 +82,17 @@ C:\Users\Компьютер\Desktop\tmp\ShalePlugin-master\Shale\Shale\obj\Debug
 C:\Users\Компьютер\Desktop\tmp\ShalePlugin-master\Shale\Shale\obj\Debug\Shale.csproj.GenerateResource.Cache
 C:\Users\Компьютер\Desktop\tmp\ShalePlugin-master\Shale\Shale\obj\Debug\Shale.dll
 C:\Users\Компьютер\Desktop\tmp\ShalePlugin-master\Shale\Shale\obj\Debug\Shale.pdb
+C:\Users\Vaz\Desktop\ShalePlugin\Shale\Shale\bin\Debug\Shale.dll.config
+C:\Users\Vaz\Desktop\ShalePlugin\Shale\Shale\bin\Debug\Shale.dll
+C:\Users\Vaz\Desktop\ShalePlugin\Shale\Shale\bin\Debug\Shale.pdb
+C:\Users\Vaz\Desktop\ShalePlugin\Shale\Shale\bin\Debug\Slb.Ocean.Petrel.UI.Controls.dll
+C:\Users\Vaz\Desktop\ShalePlugin\Shale\Shale\bin\Debug\Slb.Ocean.Petrel.UI.WellSection.dll
+C:\Users\Vaz\Desktop\ShalePlugin\Shale\Shale\bin\Debug\Slb.Ocean.Petrel.Well.dll
+C:\Users\Vaz\Desktop\ShalePlugin\Shale\Shale\bin\Debug\Slb.Ocean.Petrel.Modeling.dll
+C:\Users\Vaz\Desktop\ShalePlugin\Shale\Shale\bin\Debug\Slb.Ocean.Petrel.Geology.dll
+C:\Users\Vaz\Desktop\ShalePlugin\Shale\Shale\obj\Debug\Shale.csprojResolveAssemblyReference.cache
+C:\Users\Vaz\Desktop\ShalePlugin\Shale\Shale\obj\Debug\Shale.Properties.Resources.resources
+C:\Users\Vaz\Desktop\ShalePlugin\Shale\Shale\obj\Debug\Shale.ShaleWorkstepUI.resources
+C:\Users\Vaz\Desktop\ShalePlugin\Shale\Shale\obj\Debug\Shale.csproj.GenerateResource.Cache
+C:\Users\Vaz\Desktop\ShalePlugin\Shale\Shale\obj\Debug\Shale.dll
+C:\Users\Vaz\Desktop\ShalePlugin\Shale\Shale\obj\Debug\Shale.pdb

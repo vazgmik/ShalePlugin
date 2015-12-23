@@ -66,7 +66,7 @@ namespace Shale
             this.context = context;
             
             workstep.CopyArgumentPackage(args, tmpargs);
-            AddMdRange();
+
         }
 
 
@@ -91,28 +91,8 @@ namespace Shale
             }
         }
 
-
-        //add vals to dictionary for MD range proccessing
-        public void AddMdRange() {
-            string [] labels = {"res","son","den","por"};
-            foreach(var s in  labels){
-                tmpargs.Md_range.Add( s,new double[2]);
-            }
-        }
-
-        public void FillDic(string str, double start, double end)
-        {
-            tmpargs.Md_range[str][0] = start;
-            tmpargs.Md_range[str][1] = end;
-        }
-
         private void btn_Apply_Click(object sender, EventArgs e)
         {
-            FillDic("res", Convert.ToDouble(MD_st_res.Text), Convert.ToDouble(MD_en_res.Text));
-            FillDic("son", Convert.ToDouble(MD_st_son.Text), Convert.ToDouble(MD_en_son.Text));
-            FillDic("den", Convert.ToDouble(MD_st_dens.Text), Convert.ToDouble(MD_en_dens.Text));
-            FillDic("por", Convert.ToDouble(MD_st_por.Text), Convert.ToDouble(MD_en_por.Text));
-
             tmpargs.Boreholes = bholes;
             tmpargs.List_den = den;
             tmpargs.List_por = por;
@@ -120,6 +100,7 @@ namespace Shale
             tmpargs.List_son = son;
             tmpargs.List_vitr = vitr;
 
+            //tmpargs.BritleWellLogDTS = 
             if (context is WorkstepProcessWrapper.Context)
             {
                 Executor exec = workstep.GetExecutor(tmpargs, new WorkstepProcessWrapper.RuntimeContext());
@@ -129,6 +110,7 @@ namespace Shale
             workstep.CopyArgumentPackage(tmpargs, args);
             context.OnArgumentPackageChanged(this, new WorkflowContext.ArgumentPackageChangedEventArgs());
 
+            // replace in executesimple () method
             if (chbWellSection.Checked)
             {
                 //Creating WellSection using Template
@@ -234,6 +216,7 @@ namespace Shale
                 RemoveData(index);
                 bholes.RemoveAt(index);           
             }
+            InitForm();
 
         }
 
@@ -259,7 +242,16 @@ namespace Shale
         {    
             var tmp_res = GetCorrectType(borehole,TemplateType.ResistivityDeep);
             var tmp_vitr = GetCorrectType(borehole, TemplateType.VitriniteReflectance);
+
+            // Psonic and Ssonic for Sonic
             var tmp_son = GetCorrectType(borehole, TemplateType.Psonic);
+            var ssonic = GetCorrectType(borehole, TemplateType.Ssonic);
+
+            // danger code for calculation !!!!!!!!!!
+            if (borehole.Name == "Cooba-1" && ssonic.Count > 0)
+                tmpargs.BritleWellLogDTS = ssonic[0];
+           
+
             var tmp_den = GetCorrectType(borehole, TemplateType.DensityCompensatedBulk);
             var tmp_por = GetCorrectType(borehole, TemplateType.Porosity);
 
@@ -484,12 +476,14 @@ namespace Shale
             {
                 IImageInfoFactory f = CoreSystem.GetService<IImageInfoFactory>(val);
                 var cmbitem = new ComboBoxItem();
-                cmbitem.Text = string.Format("{0} ({1})", val.Name, data.Type);
+                cmbitem.Text = string.Format("{0}", val.Name);
                 cmbitem.Image = f.GetImageInfo(val).TypeImage;
                 cmbitem.Value = val;      
                 cmb.Items.Add(cmbitem);
             }
         }
+
+
 
         private void CheckBoxEnabled(ref CheckBox chb,int count)
         {

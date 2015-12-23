@@ -99,6 +99,23 @@ namespace Shale
     // set name window 
     public static class Helper
     {
+        // Piecewise LOM function (X - VitriniteReflectance, Y - Level of Maturity)
+        static Point2[] line = { new Point2(0.38, 6), new Point2(0.63, 8.5), new Point2(0.82, 10), new Point2(1, 11),
+                          new Point2(1.5, 12), new Point2(2, 13.6), new Point2(2.5, 15.8), new Point2(2.9, 17.1)};
+        public static double LOM_Approximation(double lomValue)
+        {
+            double k = 0, c = 0;
+            for (int i = 0; i < line.Length-2;++i )
+            {
+                if (lomValue >= line[i].X && lomValue <= line[i + 1].X)
+                {
+                    k = (line[i].Y - line[i + 1].Y) / (line[i].X - line[i + 1].X);
+                    c = line[i].Y - k * line[i].X;
+                    return k * lomValue + c;
+                }
+            }
+            return 0;
+        }
         public static void SetNameWindow(ToggleWindow window, String name)
         {
             // function to set window name in petrel
@@ -108,6 +125,15 @@ namespace Shale
                 nameInfo.Name = name;
         }
 
+
+        public static void Swap<T>(this IList<T> list, int i, int j)
+        {
+            if (i == j)   //This check is not required but Partition function may make many calls so its for perf reason
+                return;
+            var temp = list[i];
+            list[i] = list[j];
+            list[j] = temp;
+        }
         public static int Partition<T>(this IList<T> list, int start, int end, Random rnd = null) where T : IComparable<T>
         {
             if (rnd != null)
@@ -146,15 +172,6 @@ namespace Shale
                 else
                     start = pivotIndex + 1;
             }
-        }
-
-        public static void Swap<T>(this IList<T> list, int i, int j)
-        {
-            if (i == j)   //This check is not required but Partition function may make many calls so its for perf reason
-                return;
-            var temp = list[i];
-            list[i] = list[j];
-            list[j] = temp;
         }
 
         /// <summary>
@@ -242,7 +259,7 @@ namespace Shale
 
             public WellLog CreateWellLog(Borehole bh, string name, Template t, List<WellLogSample> tsamples)
             {
-                
+      
                 //function to create welllog
                 WellLog log;
                 using (ITransaction trans = DataManager.NewTransaction())
@@ -294,22 +311,23 @@ namespace Shale
             }
 
 
-            public void CalculateTOC(MyData data, List<WellLogSample> res_samples, int index, double k, string name1, string name2, Borehole bhole)
+            public void CalculateTOC(MyData data, List<WellLogSample> res_samples, List<WellLogSample> vitr_samples, int index, double k, string name1, string name2, Borehole bhole)
             {
-                // function to calculate TOC
+                //calculate TOC function
                 if (data.Log.Count != 0)
                 {
-
                     //System.IO.StreamWriter file = new System.IO.StreamWriter("d:\\test.txt");
                     List<WellLogSample>tmpsamples = new List<WellLogSample>();
                     List<WellLogSample> type_samples = data.Log[data.Select_index].Samples.ToList();
-                    
+      
                     float max_resval = GetMedian(res_samples, arguments.List_res[index].Md_start, arguments.List_res[index].Md_end);//20;
                     float max_dtcval = GetMedian(type_samples, data.Md_start,data.Md_end);//65;
 
                     List<WellLogSample> tocs_samples = new List<WellLogSample>();
-                    int size = Math.Min(arguments.List_res[index].Log[arguments.List_res[index].Select_index].SampleCount, data.Log[data.Select_index].SampleCount);
-                    double power = 0.297 - 0.1688 * 13;//LOM  надо подставить здесь 13
+                    int size = Math.Min(res_samples.Count, type_samples.Count);
+                    size = Math.Min(size, vitr_samples.Count);
+
+                    double power = 0.297 - 0.1688 * 13;
                     for (int i = 0; i < size; ++i)
                     {
                         if (!res_samples[i].Value.Equals(float.NaN) && !type_samples[i].Value.Equals(float.NaN))
@@ -317,11 +335,15 @@ namespace Shale
                             // log (RESD / RESDbase) + 0.02 * (DTC – DTCbase)
                             double part1 = Math.Log((double)(res_samples[i].Value / max_resval),10);
                             double part2 = 0.02 * (type_samples[i].Value - max_dtcval) / 3.281;//*3.28 * (float)Math.Pow(10,-6);
+
                             float fl_typelog = (float)(part1 + part2);
                             tmpsamples.Add(new WellLogSample(res_samples[i].MD, fl_typelog));
+
+                            //using LOM approximation
+                            double newpower = 0.297 - 0.1688 * Helper.LOM_Approximation(vitr_samples[i].Value);
                             float fl_typetoc = fl_typelog * (float)Math.Pow(10, power);
-                            tocs_samples.Add(new WellLogSample(res_samples[i].MD, fl_typetoc));
-                           
+
+                            tocs_samples.Add(new WellLogSample(res_samples[i].MD, fl_typetoc));                        
                           //  file.WriteLine(fl_typetoc);
 
                         }
@@ -339,17 +361,36 @@ namespace Shale
 
 
             //Well space - Geomechanical: Poisson ratio, Young Modulus, Average Brittleness estimations
-            public void BritleAnalysis()
+            public void BritleAnalysis(Borehole bhole,List<WellLogSample> dtSamples)
             {
                 /*Poissson_Ratio=0.5*(DTS*DTS-2*DT*DT)/(DTS*DTS-DT*DT)
-                    young_modul=2*13475*RHOB_GC*(1+Possson_Ratio)/(DTS*DTS)
-                    V_br=(Possson_Ratio-0.15)/(0.15) Possson_Ratio  ?max and ?min are the maximum and minimum values 
-                    E_br=(young_modul-0.7)/7.3 young_modul Emin and Emax
-                    BA= 100*(E_br+V_br)/2
+                  young_modul=2*13475*RHOB_GC*(1+Poissson_Ratio)/(DTS*DTS)
+                  V_br=(Possson_Ratio-0.15)/(0.15) Possson_Ratio  ?max and ?min are the maximum and minimum values 
+                  E_br=(young_modul-0.7)/7.3 young_modul Emin and Emax
+                  BA= 100*(E_br+V_br)/2
 
-                    DTS - this is S-sonic vs
-                    DT and DTC- these are P-sonic vp
-                    RHOB_GC - density */
+                  DTS - this is S-sonic vs
+                  DT and DTC- these are P-sonic vp
+                  RHOB_GC - density */
+
+                List<WellLogSample> PoissonRatioSamples = new List<WellLogSample>();
+                int size = Math.Min(dtSamples.Count,arguments.BritleWellLogDTS.SampleCount);
+                var dtsSamples = arguments.BritleWellLogDTS.Samples.ToList();
+                float val = 0;
+                for(int i = 0;i<size;++i)
+                {
+                    var dtValue = dtSamples[i].Value;
+                    var dtsValue = dtsSamples[i].Value;
+                    if (!dtValue.Equals(float.NaN) && !dtsValue.Equals(float.NaN))
+                    {
+                        val = 0.5f * (dtsValue * dtsValue - 2 * dtValue * dtValue) / (dtsValue * dtsValue - dtValue * dtValue);
+                        PoissonRatioSamples.Add(new WellLogSample(dtSamples[i].MD, val));
+                    }
+                }
+                Template t = CreateCustomFractionTemplate();
+                CreateWellLog(bhole, "PoissonRatio", t, PoissonRatioSamples);
+
+
             }
             public void UpdateDrawCorrelationData2D(WellLog log1, WellLog log2, CorrelationData2D cor,String name)
             {
@@ -398,27 +439,32 @@ namespace Shale
                         index++;
                         continue;
                     }
-                    //resistivity samples
-                    var samples = arguments.List_res[index].Log[arguments.List_res[index].Select_index].Samples;
+
                     
+                    var resistivitySamples = arguments.List_res[index].Log[arguments.List_res[index].Select_index].Samples;
+                    var vitriniteSamples = arguments.List_vitr[index].Log[arguments.List_vitr[index].Select_index].Samples;
                     //create list res_samples,contains samples of resistivity log 
-                    List<WellLogSample> res_samples = samples.ToList();
+                    List<WellLogSample> res_samples = resistivitySamples.ToList();
+
+                    //create list vitrinite_samples,contains samples of resistivity log 
+                    List<WellLogSample> vitr_samples = vitriniteSamples.ToList();
+
                     //tmp contains Math.Log(values) of samples
-                    List<WellLogSample> tmpsamples = new List<WellLogSample>();
+                    List<WellLogSample> logSamples = new List<WellLogSample>();
                     
-                    foreach (WellLogSample sample in samples)
+                    foreach (WellLogSample sample in resistivitySamples)
                     {
                         if (sample.Value > 0 && !sample.Value.Equals(float.NaN))
                         {
                             float fl_log =(float)Math.Log((double)sample.Value,10 );
-                            tmpsamples.Add(new WellLogSample(sample.MD, fl_log));
+                            logSamples.Add(new WellLogSample(sample.MD, fl_log));
                         }
                     }
 
                     // if sonic checked then we can draw plot LogR vs Sonic
                     if (arguments.List_son[index].Check && arguments.List_son[index].Log.Count != 0)
                     {
-                        var LogR = CreateWellLog(bhole, "LogR", arguments.List_res[index].Log[arguments.List_res[index].Select_index].WellLogVersion.Template, tmpsamples);
+                        var LogR = CreateWellLog(bhole, "LogR", arguments.List_res[index].Log[arguments.List_res[index].Select_index].WellLogVersion.Template, logSamples);
 
                         using (ITransaction trans = DataManager.NewTransaction())
                         {
@@ -447,20 +493,21 @@ namespace Shale
                     if (arguments.List_son[index].Check &&  arguments.List_son[index].Select_index >=0 && arguments.List_son[index].Log.Count >0)
                     {
                         //create SLogR and TOCs
-                        CalculateTOC(arguments.List_son[index], res_samples, index, 0.02, "SlogR", "TOCs", bhole);
+                        CalculateTOC(arguments.List_son[index], res_samples,vitr_samples, index, 0.02, "SlogR", "TOCs", bhole);
                     }
                     if (arguments.List_den[index].Check &&  arguments.List_den[index].Select_index >=0 && arguments.List_den[index].Log.Count >0 )
                     {
                         //create DlogR and TOCd
-                        CalculateTOC(arguments.List_den[index], res_samples, index, -2.5, "DlogR", "TOCd", bhole);
+                        CalculateTOC(arguments.List_den[index], res_samples,vitr_samples, index, -2.5, "DlogR", "TOCd", bhole);
                     }
 
                     if (arguments.List_por[index].Check && arguments.List_por[index].Select_index >= 0 && arguments.List_por[index].Log.Count > 0)
                     {
                         //create DlogR and TOCd
-                        CalculateTOC(arguments.List_por[index],res_samples, index, 4.0, "NlogR", "TOCn", bhole);
+                        CalculateTOC(arguments.List_por[index],res_samples,vitr_samples, index, 4.0, "NlogR", "TOCn", bhole);
                     }
 
+                    BritleAnalysis(bhole,arguments.List_son[index].Log[arguments.List_son[index].Select_index].Samples.ToList());
                     index++;
                 }
                 arguments.Log_count = log_counter;
@@ -496,9 +543,7 @@ namespace Shale
                 get { return log_count; }
                 set { log_count = value; }
             }
-            private List<Borehole> boreholes = new List<Borehole>();
-
-         
+            
             private List<MyData> list_res = new List<MyData>();
 
             public List<MyData> List_res
@@ -536,21 +581,32 @@ namespace Shale
                 set { list_vitr = value; }
             }
 
+            private List<Borehole> boreholes = new List<Borehole>();
             public List<Borehole> Boreholes
             {
                 get { return boreholes; }
                 set { boreholes = value; }
             }
 
-            public Dictionary<string,double[]> md_range = new Dictionary<string,double[]>();
-            
-            public Dictionary<string, double[]> Md_range
+
+            private WellLog britleWellLogDTS;
+
+            public WellLog BritleWellLogDTS
             {
-                get { return md_range; }
-                set { md_range = value; }
+                get { return britleWellLogDTS; }
+                set { britleWellLogDTS = value; }
             }
 
-          
+            private WellLog britleWellLogRHOB_GC;
+
+            public WellLog BritleWellLogRHOB_GC
+            {
+                get { return britleWellLogRHOB_GC; }
+                set { britleWellLogRHOB_GC = value; }
+            }
+
+
+            
         }
     
         #region IAppearance Members

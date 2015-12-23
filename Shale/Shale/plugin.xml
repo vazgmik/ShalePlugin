@@ -6,7 +6,7 @@
   <PluginUri>http://www.pluginuri.info/</PluginUri>
   <PluginId>://Shale.ShalePlugin/1.0.0.0</PluginId>
   <Trust PublicKeyToken="">Default</Trust>
-  <ReleaseDate>2015-12-21</ReleaseDate>
+  <ReleaseDate>2015-12-23</ReleaseDate>
   <Author>Vazgen and Vadim</Author>
   <AppVersion>2014.1</AppVersion>
   <Modules>
